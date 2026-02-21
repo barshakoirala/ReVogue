@@ -5,10 +5,11 @@ export const productsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }),
   endpoints: (builder) => ({
     getProducts: builder.query({
-      query: ({ tier, section } = {}) => {
+      query: ({ tier, section, limit } = {}) => {
         const params = new URLSearchParams();
         if (tier) params.set("tier", tier);
         if (section) params.set("section", section);
+        if (limit) params.set("limit", limit);
         const qs = params.toString();
         return `/products${qs ? `?${qs}` : ""}`;
       },

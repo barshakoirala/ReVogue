@@ -14,10 +14,11 @@ export async function getProduct(req, res, next) {
 
 export async function getProducts(req, res, next) {
   try {
-    const { tier, section } = req.query;
+    const { tier, section, limit } = req.query;
     const products = await productService.getProducts({
       tier: tier || undefined,
       section: section || undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
     });
     res.json({ products });
   } catch (err) {

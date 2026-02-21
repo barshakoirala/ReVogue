@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
@@ -19,6 +19,11 @@ const SECTIONS = [
   { id: "others", label: "Others" },
 ];
 
+const CARD_WIDTH = 160;
+const CARD_HEIGHT = 276;
+const CARD_GAP = 16;
+const SCROLL_AMOUNT = CARD_WIDTH + CARD_GAP;
+
 function ProductCard({ product }) {
   const imageUrl = product.images?.[0] || "https://picsum.photos/400/400?random=1";
   const brandName = product.brand?.name;
@@ -27,9 +32,10 @@ function ProductCard({ product }) {
   return (
     <Link
       to={`/products/${product._id}`}
-      className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow border border-stone-100"
+      className="group block flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow border border-stone-100 flex flex-col"
+      style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}
     >
-      <div className="aspect-square bg-stone-100 relative overflow-hidden">
+      <div className="w-full h-40 bg-stone-100 relative overflow-hidden flex-shrink-0">
         <img
           src={imageUrl}
           alt={product.title}
@@ -41,16 +47,14 @@ function ProductCard({ product }) {
           </span>
         )}
       </div>
-      <div className="p-3">
-        {brandName && (
-          <p className="text-xs text-stone-500 uppercase tracking-wider mb-0.5">
-            {brandName}
-          </p>
-        )}
-        <h3 className="font-medium text-stone-900 line-clamp-2 group-hover:text-amber-800">
+      <div className="flex flex-col flex-1 min-h-0 p-3">
+        <p className="text-xs text-stone-500 uppercase tracking-wider mb-0.5 min-h-[1rem] line-clamp-1">
+          {brandName || "\u00A0"}
+        </p>
+        <h3 className="font-medium text-stone-900 line-clamp-2 group-hover:text-amber-800 flex-1 min-h-0">
           {product.title}
         </h3>
-        <p className="text-sm text-stone-600 mt-1">
+        <p className="text-sm text-stone-600 mt-1 flex-shrink-0">
           NPR {product.price?.toLocaleString()}
         </p>
       </div>
@@ -58,21 +62,78 @@ function ProductCard({ product }) {
   );
 }
 
+function ScrollArrow({ direction, onClick, disabled }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={`Scroll ${direction}`}
+      className={`absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/90 transition-all ${direction === "left" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2"}`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        {direction === "left" ? (
+          <path d="M15 18l-6-6 6-6" />
+        ) : (
+          <path d="M9 18l6-6-6-6" />
+        )}
+      </svg>
+    </button>
+  );
+}
+
 function ProductSection({ title, tier, section }) {
+  const scrollRef = useRef(null);
   const { data: products = [], isLoading, error } = useGetProductsQuery({
     tier: tier === "all" ? undefined : tier,
     section,
+    limit: 10,
   });
+
+  const scroll = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT, behavior: "smooth" });
+  };
+
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 0);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 1);
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [products]);
 
   if (isLoading) {
     return (
       <section>
         <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="flex gap-4 overflow-x-hidden">
+          {[...Array(5)].map((_, i) => (
             <div
               key={i}
-              className="aspect-square bg-stone-200 animate-pulse rounded-xl"
+              className="flex-shrink-0 w-[160px] h-[276px] bg-stone-200 animate-pulse rounded-xl"
             />
           ))}
         </div>
@@ -101,10 +162,28 @@ function ProductSection({ title, tier, section }) {
   return (
     <section>
       <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
-        ))}
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:-mx-0 sm:px-0 snap-x snap-mandatory"
+        >
+          {products.map((product) => (
+            <div key={product._id} className="snap-start flex-shrink-0">
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+        <ScrollArrow
+          direction="left"
+          onClick={() => scroll("left")}
+          disabled={!canScrollLeft}
+        />
+        <ScrollArrow
+          direction="right"
+          onClick={() => scroll("right")}
+          disabled={!canScrollRight}
+        />
       </div>
     </section>
   );

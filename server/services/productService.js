@@ -5,9 +5,9 @@ import {
   STATUS_ACTIVE,
   TIER_LUXURY,
   TIER_NORMAL,
-  PRODUCT_SORT,
   PRODUCT_SECTION,
   NEW_PRODUCT_DAYS,
+  HOME_SECTION_LIMIT,
 } from "../constants/product.js";
 
 export async function getProductById(id) {
@@ -19,7 +19,7 @@ export async function getProductById(id) {
   return product;
 }
 
-export async function getProducts({ tier, section, limit = 50 }) {
+export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT }) {
   const filter = { status: STATUS_ACTIVE };
   if (tier === TIER_LUXURY || tier === TIER_NORMAL) {
     filter.tier = tier;

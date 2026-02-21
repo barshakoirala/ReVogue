@@ -4,6 +4,7 @@ import BrowsePage from "./pages/BrowsePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrdersPage from "./pages/OrdersPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
@@ -61,6 +62,14 @@ function App() {
           element={
             <UserRoute>
               <CheckoutPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <UserRoute>
+              <OrdersPage />
             </UserRoute>
           }
         />

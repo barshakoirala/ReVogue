@@ -38,8 +38,15 @@ export default function UserHeader({ showBack = false, centerContent }) {
         {centerContent && <div className="flex-1 flex justify-center">{centerContent}</div>}
         <div className="flex items-center gap-6">
           {isUser && (
-            <Link
-              to="/cart"
+            <>
+              <Link
+                to="/orders"
+                className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
+              >
+                My orders
+              </Link>
+              <Link
+                to="/cart"
               className="relative p-2 text-stone-600 hover:text-stone-900 transition-colors"
               aria-label={`Cart (${cartCount} items)`}
             >
@@ -64,6 +71,7 @@ export default function UserHeader({ showBack = false, centerContent }) {
                 </span>
               )}
             </Link>
+            </>
           )}
           <nav className="flex gap-4 items-center">
             {token ? (

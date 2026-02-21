@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CLASSES } from "../constants/theme";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
-import { useGetCartQuery } from "../store/api/cartApi";
+import { cartApi, useGetCartQuery } from "../store/api/cartApi";
 import { useCheckoutMutation } from "../store/api/orderApi";
 import UserHeader from "../components/UserHeader";
 
@@ -19,6 +19,7 @@ const INITIAL_FORM = {
 };
 
 export default function CheckoutPage() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
 
@@ -42,7 +43,8 @@ export default function CheckoutPage() {
     e.preventDefault();
     try {
       await checkout(form).unwrap();
-      navigate("/");
+      dispatch(cartApi.util.invalidateTags(["Cart"]));
+      navigate("/orders?success=1");
     } catch (err) {
       console.error(err);
     }

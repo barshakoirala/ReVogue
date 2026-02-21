@@ -13,7 +13,7 @@ export default function ProductDetailPage() {
   const token = useSelector((state) => state.auth.token);
   const { data: user } = useGetMeQuery(undefined, { skip: !token });
   const { data: product, isLoading, error } = useGetProductQuery(id);
-  const [addToCart, { isLoading: adding }] = useAddToCartMutation();
+  const [addToCart, { isLoading: adding, error: addError }] = useAddToCartMutation();
 
   const isUser = !!token && user?.role === "user";
 
@@ -41,10 +41,12 @@ export default function ProductDetailPage() {
   const handleAddToCart = async () => {
     try {
       await addToCart({ productId: id, quantity }).unwrap();
-    } catch (err) {
-      // handled by mutation
+    } catch {
+      // error shown via addError
     }
   };
+
+  const addErrorMessage = addError?.data?.message || addError?.message || (addError && "Failed to add to cart");
 
   return (
     <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
@@ -128,6 +130,9 @@ export default function ProductDetailPage() {
                   <p className="text-sm text-stone-600 mb-4">
                     Subtotal: <span className="font-semibold text-stone-900">NPR {((product.price ?? 0) * quantity).toLocaleString()}</span>
                   </p>
+                  {addErrorMessage && (
+                    <p className="text-sm text-red-600 mb-3">{addErrorMessage}</p>
+                  )}
                   <button
                     onClick={handleAddToCart}
                     disabled={adding}

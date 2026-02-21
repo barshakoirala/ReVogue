@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useRegisterMutation } from "../store/api/authApi";
 import { setCredentials } from "../store/slices/authSlice";
+import { ROLES } from "../constants/roles";
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState("");
@@ -18,7 +19,8 @@ export default function RegisterPage() {
     const result = await registerUser({ firstName, lastName, email, password });
     if (result.data) {
       dispatch(setCredentials({ token: result.data.token }));
-      navigate("/");
+      const isAdmin = result.data.user?.role === ROLES.ADMIN;
+      navigate(isAdmin ? "/admin" : "/");
     }
   };
 

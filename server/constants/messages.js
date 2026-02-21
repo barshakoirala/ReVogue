@@ -3,7 +3,7 @@ export const AUTH_MESSAGES = {
   REGISTER_SUCCESS: "User registered successfully",
   LOGIN_SUCCESS: "Login successful",
   ADMIN_ACCESS_GRANTED: "Admin access granted",
-  NAME_EMAIL_PASSWORD_REQUIRED: "Name, email, and password are required.",
+  REGISTER_FIELDS_REQUIRED: "First name, last name, email, and password are required.",
   EMAIL_PASSWORD_REQUIRED: "Email and password are required.",
   EMAIL_ALREADY_REGISTERED: "Email already registered.",
   INVALID_EMAIL_OR_PASSWORD: "Invalid email or password.",

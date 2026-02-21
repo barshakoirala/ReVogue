@@ -8,16 +8,24 @@ const generateToken = (userId) => {
   return jwt.sign({ userId }, config.jwtSecret, { expiresIn: "7d" });
 };
 
-const formatUserResponse = (user) => ({
-  id: user._id,
-  name: user.name,
-  email: user.email,
-  role: user.role,
-});
+export const formatUserResponse = (user) => {
+  const firstName = user.firstName ?? user.name?.split(" ")[0] ?? "";
+  const lastName = user.lastName ?? user.name?.split(" ").slice(1).join(" ") ?? "";
+  return {
+    id: user._id,
+    firstName,
+    lastName,
+    fullName: `${firstName} ${lastName}`.trim() || user.name || "",
+    email: user.email,
+    gender: user.gender,
+    dob: user.dob,
+    role: user.role,
+  };
+};
 
-export async function register({ name, email, password }) {
-  if (!name || !email || !password) {
-    throw new AppError(AUTH_MESSAGES.NAME_EMAIL_PASSWORD_REQUIRED, 400);
+export async function register({ firstName, lastName, email, password }) {
+  if (!firstName || !lastName || !email || !password) {
+    throw new AppError(AUTH_MESSAGES.REGISTER_FIELDS_REQUIRED, 400);
   }
 
   const existing = await User.findOne({ email });
@@ -25,7 +33,7 @@ export async function register({ name, email, password }) {
     throw new AppError(AUTH_MESSAGES.EMAIL_ALREADY_REGISTERED, 400);
   }
 
-  const user = await User.create({ name, email, password });
+  const user = await User.create({ firstName, lastName, email, password });
   const token = generateToken(user._id);
 
   return {

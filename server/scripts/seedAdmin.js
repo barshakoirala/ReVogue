@@ -15,7 +15,8 @@ async function seedAdmin() {
       return;
     }
     const admin = await User.create({
-      name: SEED_ADMIN.NAME,
+      firstName: SEED_ADMIN.FIRST_NAME,
+      lastName: SEED_ADMIN.LAST_NAME,
       email: SEED_ADMIN.EMAIL,
       password: SEED_ADMIN.PASSWORD,
       role: SEED_ADMIN.ROLE,

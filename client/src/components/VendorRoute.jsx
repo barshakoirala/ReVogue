@@ -3,12 +3,12 @@ import { useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
 import { ROLES } from "../constants/roles";
 
-export default function UserRoute({ children }) {
+export default function VendorRoute({ children }) {
   const token = useSelector((state) => state.auth.token);
   const { data: user, isLoading } = useGetMeQuery(undefined, { skip: !token });
 
   if (!token) {
-    return children;
+    return <Navigate to="/login" replace />;
   }
 
   if (isLoading) {
@@ -19,12 +19,8 @@ export default function UserRoute({ children }) {
     );
   }
 
-  if (user?.role === ROLES.ADMIN) {
-    return <Navigate to="/admin" replace />;
-  }
-
-  if (user?.role === ROLES.VENDOR) {
-    return <Navigate to="/vendor" replace />;
+  if (user?.role !== ROLES.VENDOR) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

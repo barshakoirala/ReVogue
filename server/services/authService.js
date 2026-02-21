@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { config } from "../config.js";
 import { AppError } from "../utils/AppError.js";
-import { AUTH_MESSAGES } from "../constants/index.js";
+import { AUTH_MESSAGES, ROLES } from "../constants/index.js";
 
 const generateToken = (userId) => {
   return jwt.sign({ userId }, config.jwtSecret, { expiresIn: "7d" });
@@ -23,17 +23,21 @@ export const formatUserResponse = (user) => {
   };
 };
 
-export async function register({ firstName, lastName, email, password }) {
+const ALLOWED_REGISTER_ROLES = [ROLES.USER, ROLES.VENDOR];
+
+export async function register({ firstName, lastName, email, password, role = ROLES.USER }) {
   if (!firstName || !lastName || !email || !password) {
     throw new AppError(AUTH_MESSAGES.REGISTER_FIELDS_REQUIRED, 400);
   }
+
+  const safeRole = ALLOWED_REGISTER_ROLES.includes(role) ? role : ROLES.USER;
 
   const existing = await User.findOne({ email });
   if (existing) {
     throw new AppError(AUTH_MESSAGES.EMAIL_ALREADY_REGISTERED, 400);
   }
 
-  const user = await User.create({ firstName, lastName, email, password });
+  const user = await User.create({ firstName, lastName, email, password, role: safeRole });
   const token = generateToken(user._id);
 
   return {

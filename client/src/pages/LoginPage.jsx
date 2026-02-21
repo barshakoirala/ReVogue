@@ -17,8 +17,10 @@ export default function LoginPage() {
     const result = await login({ email, password });
     if (result.data) {
       dispatch(setCredentials({ token: result.data.token }));
-      const isAdmin = result.data.user?.role === ROLES.ADMIN;
-      navigate(isAdmin ? "/admin" : "/");
+      const role = result.data.user?.role;
+      if (role === ROLES.ADMIN) navigate("/admin");
+      else if (role === ROLES.VENDOR) navigate("/vendor");
+      else navigate("/");
     }
   };
 

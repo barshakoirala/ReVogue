@@ -4,8 +4,8 @@ import { AUTH_MESSAGES } from "../constants/index.js";
 
 export async function register(req, res, next) {
   try {
-    const { firstName, lastName, email, password } = req.body;
-    const result = await authService.register({ firstName, lastName, email, password });
+    const { firstName, lastName, email, password, role } = req.body;
+    const result = await authService.register({ firstName, lastName, email, password, role });
 
     res.status(201).json({
       message: AUTH_MESSAGES.REGISTER_SUCCESS,

@@ -5,6 +5,10 @@ import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminRoute from "./components/AdminRoute";
+import VendorLayout from "./layouts/VendorLayout";
+import VendorDashboard from "./pages/vendor/VendorDashboard";
+import VendorProducts from "./pages/vendor/VendorProducts";
+import VendorRoute from "./components/VendorRoute";
 import UserRoute from "./components/UserRoute";
 
 function App() {
@@ -30,6 +34,17 @@ function App() {
           }
         >
           <Route index element={<AdminDashboard />} />
+        </Route>
+        <Route
+          path="/vendor"
+          element={
+            <VendorRoute>
+              <VendorLayout />
+            </VendorRoute>
+          }
+        >
+          <Route index element={<VendorDashboard />} />
+          <Route path="products" element={<VendorProducts />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

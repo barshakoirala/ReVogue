@@ -3,7 +3,7 @@ import "dotenv/config";
 import User from "../models/User.js";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
-import { SEED_ADMIN } from "../constants/index.js";
+import { SEED_ADMIN, ROLES } from "../constants/index.js";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/revogue";
 
@@ -67,6 +67,34 @@ async function seedDb() {
       console.log("Admin created:", admin.email);
     } else {
       console.log("Admin exists:", admin.email);
+    }
+
+    let vendor = await User.findOne({ email: "vendor@revogue.com" });
+    if (!vendor) {
+      vendor = await User.create({
+        firstName: "Test",
+        lastName: "Vendor",
+        email: "vendor@revogue.com",
+        password: "vendor123",
+        role: ROLES.VENDOR,
+      });
+      console.log("Vendor created: vendor@revogue.com / vendor123");
+    } else {
+      console.log("Vendor exists: vendor@revogue.com");
+    }
+
+    let vendor2 = await User.findOne({ email: "vendor@vendor.com" });
+    if (!vendor2) {
+      vendor2 = await User.create({
+        firstName: "Vendor",
+        lastName: "Two",
+        email: "vendor@vendor.com",
+        password: "Pythonjs20$",
+        role: ROLES.VENDOR,
+      });
+      console.log("Vendor created: vendor@vendor.com / Pythonjs20$");
+    } else {
+      console.log("Vendor exists: vendor@vendor.com");
     }
 
     await Category.deleteMany({});

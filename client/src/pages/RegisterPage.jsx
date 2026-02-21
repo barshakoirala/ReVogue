@@ -10,17 +10,26 @@ export default function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isVendor, setIsVendor] = useState(false);
   const [registerUser, { isLoading, error }] = useRegisterMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await registerUser({ firstName, lastName, email, password });
+    const result = await registerUser({
+      firstName,
+      lastName,
+      email,
+      password,
+      role: isVendor ? ROLES.VENDOR : ROLES.USER,
+    });
     if (result.data) {
       dispatch(setCredentials({ token: result.data.token }));
-      const isAdmin = result.data.user?.role === ROLES.ADMIN;
-      navigate(isAdmin ? "/admin" : "/");
+      const role = result.data.user?.role;
+      if (role === ROLES.ADMIN) navigate("/admin");
+      else if (role === ROLES.VENDOR) navigate("/vendor");
+      else navigate("/");
     }
   };
 
@@ -93,6 +102,18 @@ export default function RegisterPage() {
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
                 placeholder="At least 6 characters"
               />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id="isVendor"
+                type="checkbox"
+                checked={isVendor}
+                onChange={(e) => setIsVendor(e.target.checked)}
+                className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label htmlFor="isVendor" className="text-sm text-gray-700">
+                I want to sell on ReVogue
+              </label>
             </div>
             <button
               type="submit"

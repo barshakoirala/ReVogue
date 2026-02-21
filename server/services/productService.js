@@ -48,3 +48,14 @@ export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT })
 
   return products;
 }
+
+export async function getAllProductsForAdmin(limit = 200) {
+  return Product.find({})
+    .populate("category", "name")
+    .populate("subcategory", "name")
+    .populate("brand", "name")
+    .populate("seller", "firstName lastName email")
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
+}

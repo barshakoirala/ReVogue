@@ -1,10 +1,11 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
 import { logout } from "../store/slices/authSlice";
 import { authApi } from "../store/api/authApi";
 
 export default function AdminLayout() {
+  const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const { data: user } = useGetMeQuery(undefined, { skip: !token });
   const dispatch = useDispatch();
@@ -27,9 +28,27 @@ export default function AdminLayout() {
         <nav className="flex-1 p-4 space-y-1">
           <Link
             to="/admin"
-            className="block px-3 py-2 rounded bg-gray-800 text-white"
+            className={`block px-3 py-2 rounded ${location.pathname === "/admin" ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}
           >
             Dashboard
+          </Link>
+          <Link
+            to="/admin/products"
+            className={`block px-3 py-2 rounded ${location.pathname === "/admin/products" ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}
+          >
+            Products
+          </Link>
+          <Link
+            to="/admin/categories"
+            className={`block px-3 py-2 rounded ${location.pathname === "/admin/categories" ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}
+          >
+            Categories
+          </Link>
+          <Link
+            to="/admin/brands"
+            className={`block px-3 py-2 rounded ${location.pathname === "/admin/brands" ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}
+          >
+            Brands
           </Link>
         </nav>
         <div className="p-4 border-t border-gray-800">

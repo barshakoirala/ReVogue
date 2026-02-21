@@ -5,6 +5,9 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProducts from "./pages/admin/AdminProducts";
+import AdminCategories from "./pages/admin/AdminCategories";
+import AdminBrands from "./pages/admin/AdminBrands";
 import AdminRoute from "./components/AdminRoute";
 import VendorLayout from "./layouts/VendorLayout";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
@@ -43,6 +46,9 @@ function App() {
           }
         >
           <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="categories" element={<AdminCategories />} />
+          <Route path="brands" element={<AdminBrands />} />
         </Route>
         <Route
           path="/vendor"

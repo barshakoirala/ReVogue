@@ -1,0 +1,12 @@
+{
+  "name": "revogue",
+  "private": true,
+  "workspaces": [
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=client",
+    "dev:client": "npm run dev --workspace=client"
+  }
+}
+

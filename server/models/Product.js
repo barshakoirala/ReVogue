@@ -44,6 +44,10 @@ const productSchema = new mongoose.Schema(
       enum: PRODUCT_TIER,
       default: "normal",
     },
+    trending: {
+      type: Boolean,
+      default: false,
+    },
     images: {
       type: [String],
       default: [],

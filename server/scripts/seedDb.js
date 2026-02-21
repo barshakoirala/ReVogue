@@ -61,8 +61,8 @@ const BRANDS = [
 ];
 
 const PRODUCTS = [
-  { title: "Vintage Denim Jacket", description: "Classic blue denim jacket, lightly worn.", price: 25, condition: "Good", size: "M", brand: "Levi's", categoryName: "Clothing", subcategoryName: "Outerwear", tier: "normal" },
-  { title: "Floral Summer Dress", description: "Light cotton dress, perfect for summer.", price: 18, condition: "Like New", size: "S", brand: "H&M", categoryName: "Clothing", subcategoryName: "Dresses", tier: "normal" },
+  { title: "Vintage Denim Jacket", description: "Classic blue denim jacket, lightly worn.", price: 25, condition: "Good", size: "M", brand: "Levi's", categoryName: "Clothing", subcategoryName: "Outerwear", tier: "normal", trending: true },
+  { title: "Floral Summer Dress", description: "Light cotton dress, perfect for summer.", price: 18, condition: "Like New", size: "S", brand: "H&M", categoryName: "Clothing", subcategoryName: "Dresses", tier: "normal", trending: true },
   { title: "High Waist Black Trousers", description: "Slim fit trousers, office ready.", price: 22, condition: "New", size: "M", brand: "Zara", categoryName: "Clothing", subcategoryName: "Bottoms", tier: "normal" },
   { title: "White Cotton T-Shirt", description: "Basic white tee, multiple wears left.", price: 8, condition: "Good", size: "L", brand: "Uniqlo", categoryName: "Clothing", subcategoryName: "Tops", tier: "normal" },
   { title: "Striped Blouse", description: "Navy and white striped blouse.", price: 15, condition: "Like New", size: "S", brand: "Mango", categoryName: "Clothing", subcategoryName: "Tops", tier: "normal" },
@@ -89,8 +89,8 @@ const PRODUCTS = [
   { title: "Corduroy Jacket", description: "Green corduroy jacket.", price: 34, condition: "Good", size: "L", brand: null, categoryName: "Clothing", subcategoryName: "Outerwear", tier: "normal" },
   { title: "Lady Dior Bag", description: "Iconic cannage quilted handbag, pristine.", price: 4200, condition: "Like New", size: null, brand: "Dior", categoryName: "Accessories", subcategoryName: "Bags", tier: "luxury" },
   { title: "Cartier Love Bracelet", description: "18k yellow gold iconic screw bracelet.", price: 6500, condition: "New", size: null, brand: "Cartier", categoryName: "Accessories", subcategoryName: "Jewelry", tier: "luxury" },
-  { title: "Chanel Classic Flap", description: "Black caviar leather medium flap bag.", price: 5800, condition: "Good", size: null, brand: "Chanel", categoryName: "Accessories", subcategoryName: "Bags", tier: "luxury" },
-  { title: "Gucci Horsebit Loafers", description: "Black leather horsebit loafers.", price: 650, condition: "Like New", size: "40", brand: "Gucci", categoryName: "Shoes", subcategoryName: "Formal", tier: "luxury" },
+  { title: "Chanel Classic Flap", description: "Black caviar leather medium flap bag.", price: 5800, condition: "Good", size: null, brand: "Chanel", categoryName: "Accessories", subcategoryName: "Bags", tier: "luxury", trending: true },
+  { title: "Gucci Horsebit Loafers", description: "Black leather horsebit loafers.", price: 650, condition: "Like New", size: "40", brand: "Gucci", categoryName: "Shoes", subcategoryName: "Formal", tier: "luxury", trending: true },
   { title: "Rolex Submariner", description: "Stainless steel submariner, circa 2015.", price: 11500, condition: "Good", size: null, brand: "Rolex", categoryName: "Accessories", subcategoryName: "Jewelry", tier: "luxury" },
   { title: "Louis Vuitton Neverfull", description: "Monogram canvas tote, MM size.", price: 1200, condition: "Like New", size: null, brand: "Louis Vuitton", categoryName: "Accessories", subcategoryName: "Bags", tier: "luxury" },
   { title: "Christian Louboutin Pigalle", description: "Black patent leather pumps.", price: 450, condition: "Like New", size: "38", brand: "Christian Louboutin", categoryName: "Shoes", subcategoryName: "Formal", tier: "luxury" },
@@ -180,6 +180,7 @@ async function seedDb() {
         size: p.size,
         brand: brandRef,
         tier: p.tier || "normal",
+        trending: p.trending || false,
         images: [`https://picsum.photos/400/400?random=${Math.floor(Math.random() * 1000)}`],
         seller: admin._id,
         status: "active",

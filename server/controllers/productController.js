@@ -1,0 +1,26 @@
+import * as productService from "../services/productService.js";
+
+export async function getProduct(req, res, next) {
+  try {
+    const product = await productService.getProductById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getProducts(req, res, next) {
+  try {
+    const { tier, section } = req.query;
+    const products = await productService.getProducts({
+      tier: tier || undefined,
+      section: section || undefined,
+    });
+    res.json({ products });
+  } catch (err) {
+    next(err);
+  }
+}

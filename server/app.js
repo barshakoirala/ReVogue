@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import routes from "./routes/index.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
@@ -13,5 +14,7 @@ app.use("/api", routes);
 app.get("/", (_, res) => {
   res.json({ message: "ReVogue API", status: "ok" });
 });
+
+app.use(errorHandler);
 
 export default app;

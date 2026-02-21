@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { PRODUCT_CONDITIONS, PRODUCT_STATUS, PRODUCT_VALIDATION } from "../constants/index.js";
+import { PRODUCT_CONDITIONS, PRODUCT_STATUS, PRODUCT_TIER, PRODUCT_VALIDATION } from "../constants/index.js";
 
 const productSchema = new mongoose.Schema(
   {
@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema(
     brand: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
+    },
+    tier: {
+      type: String,
+      enum: PRODUCT_TIER,
+      default: "normal",
     },
     images: {
       type: [String],

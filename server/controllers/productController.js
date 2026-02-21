@@ -14,13 +14,18 @@ export async function getProduct(req, res, next) {
 
 export async function getProducts(req, res, next) {
   try {
-    const { tier, section, limit } = req.query;
-    const products = await productService.getProducts({
+    const { tier, section, limit, page } = req.query;
+    const result = await productService.getProducts({
       tier: tier || undefined,
       section: section || undefined,
       limit: limit ? parseInt(limit, 10) : undefined,
+      page: page ? parseInt(page, 10) : undefined,
     });
-    res.json({ products });
+    if (typeof result === "object" && result.products) {
+      res.json(result);
+    } else {
+      res.json({ products: result });
+    }
   } catch (err) {
     next(err);
   }

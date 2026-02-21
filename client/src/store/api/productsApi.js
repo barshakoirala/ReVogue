@@ -15,6 +15,16 @@ export const productsApi = createApi({
       },
       transformResponse: (res) => res.products,
     }),
+    getProductsPaginated: builder.query({
+      query: ({ tier, section, page = 1, limit = 12 } = {}) => {
+        const params = new URLSearchParams();
+        if (tier) params.set("tier", tier);
+        if (section) params.set("section", section);
+        params.set("page", page);
+        params.set("limit", limit);
+        return `/products?${params}`;
+      },
+    }),
     getProduct: builder.query({
       query: (id) => `/products/${id}`,
     }),
@@ -29,4 +39,10 @@ export const productsApi = createApi({
   }),
 });
 
-export const { useGetProductsQuery, useGetProductQuery, useGetCategoriesQuery, useGetBrandsQuery } = productsApi;
+export const {
+  useGetProductsQuery,
+  useGetProductsPaginatedQuery,
+  useGetProductQuery,
+  useGetCategoriesQuery,
+  useGetBrandsQuery,
+} = productsApi;

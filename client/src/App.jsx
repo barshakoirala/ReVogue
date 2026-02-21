@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import BrowsePage from "./pages/BrowsePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -26,6 +27,14 @@ function App() {
           element={
             <UserRoute>
               <HomePage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/browse/:section"
+          element={
+            <UserRoute>
+              <BrowsePage />
             </UserRoute>
           }
         />

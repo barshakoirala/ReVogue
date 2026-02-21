@@ -92,7 +92,7 @@ function ScrollArrow({ direction, onClick, disabled }) {
   );
 }
 
-function ProductSection({ title, tier, section }) {
+function ProductSection({ title, tier, section, browseLink }) {
   const scrollRef = useRef(null);
   const { data: products = [], isLoading, error } = useGetProductsQuery({
     tier: tier === "all" ? undefined : tier,
@@ -128,7 +128,9 @@ function ProductSection({ title, tier, section }) {
   if (isLoading) {
     return (
       <section>
-        <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+        </div>
         <div className="flex gap-4 overflow-x-hidden">
           {[...Array(5)].map((_, i) => (
             <div
@@ -144,7 +146,9 @@ function ProductSection({ title, tier, section }) {
   if (error) {
     return (
       <section>
-        <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+        </div>
         <p className="text-stone-500 text-sm">Unable to load products.</p>
       </section>
     );
@@ -153,7 +157,9 @@ function ProductSection({ title, tier, section }) {
   if (products.length === 0) {
     return (
       <section>
-        <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+        </div>
         <p className="text-stone-500 text-sm">No products in this section.</p>
       </section>
     );
@@ -161,7 +167,15 @@ function ProductSection({ title, tier, section }) {
 
   return (
     <section>
-      <h2 className="text-lg font-semibold text-stone-900 mb-4">{title}</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+        <Link
+          to={browseLink}
+          className="text-sm text-amber-900 font-medium hover:underline"
+        >
+          View all
+        </Link>
+      </div>
       <div className="relative">
         <div
           ref={scrollRef}
@@ -283,6 +297,7 @@ export default function HomePage() {
               title={sec.label}
               tier={tierFilter}
               section={sec.id}
+              browseLink={`/browse/${sec.id}${tierFilter !== "all" ? `?tier=${tierFilter}` : ""}`}
             />
           ))}
         </div>

@@ -22,3 +22,5 @@ export const PRODUCT_SECTION = {
 export const NEW_PRODUCT_DAYS = 14;
 
 export const HOME_SECTION_LIMIT = 10;
+
+export const BROWSE_PAGE_SIZE = 12;

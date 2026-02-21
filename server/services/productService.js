@@ -8,6 +8,7 @@ import {
   PRODUCT_SECTION,
   NEW_PRODUCT_DAYS,
   HOME_SECTION_LIMIT,
+  BROWSE_PAGE_SIZE,
 } from "../constants/product.js";
 
 export async function getProductById(id) {
@@ -19,7 +20,7 @@ export async function getProductById(id) {
   return product;
 }
 
-export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT }) {
+export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT, page }) {
   const filter = { status: STATUS_ACTIVE };
   if (tier === TIER_LUXURY || tier === TIER_NORMAL) {
     filter.tier = tier;
@@ -38,13 +39,31 @@ export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT })
     filter.createdAt = { $lt: cutoff };
   }
 
-  const products = await Product.find(filter)
-    .populate("category", "name")
-    .populate("subcategory", "name")
-    .populate("brand", "name")
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .lean();
+  const usePagination = page != null && page >= 1;
+  const limitVal = usePagination ? (limit || BROWSE_PAGE_SIZE) : (limit || HOME_SECTION_LIMIT);
+  const skip = usePagination ? (page - 1) * limitVal : 0;
+
+  const [products, total] = await Promise.all([
+    Product.find(filter)
+      .populate("category", "name")
+      .populate("subcategory", "name")
+      .populate("brand", "name")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitVal)
+      .lean(),
+    usePagination ? Product.countDocuments(filter) : null,
+  ]);
+
+  if (usePagination) {
+    return {
+      products,
+      total,
+      page: page,
+      limit: limitVal,
+      totalPages: Math.ceil(total / limitVal),
+    };
+  }
 
   return products;
 }

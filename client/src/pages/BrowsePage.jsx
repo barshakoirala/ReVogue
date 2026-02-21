@@ -1,4 +1,6 @@
 import { useParams, useSearchParams, Link } from "react-router-dom";
+import UserHeader from "../components/UserHeader";
+import { CLASSES } from "../constants/theme";
 import { useGetProductsPaginatedQuery } from "../store/api/productsApi";
 
 const SECTION_LABELS = {
@@ -33,7 +35,7 @@ function ProductCard({ product }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         {tierLabel && (
-          <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-900/90 text-amber-50 rounded">
+          <span className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${CLASSES.luxuryBadge} rounded`}>
             {tierLabel}
           </span>
         )}
@@ -42,7 +44,7 @@ function ProductCard({ product }) {
         {brandName && (
           <p className="text-xs text-stone-500 uppercase tracking-wider mb-0.5">{brandName}</p>
         )}
-        <h3 className="font-medium text-stone-900 line-clamp-2 group-hover:text-amber-800">{product.title}</h3>
+        <h3 className={`font-medium text-stone-900 line-clamp-2 ${CLASSES.cardHover}`}>{product.title}</h3>
         <p className="text-sm text-stone-600 mt-1">NPR {product.price?.toLocaleString()}</p>
       </div>
     </Link>
@@ -83,7 +85,7 @@ export default function BrowsePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
         <div className="max-w-6xl mx-auto px-4 py-8">
           <p className="text-stone-500">Loading...</p>
         </div>
@@ -93,27 +95,18 @@ export default function BrowsePage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-stone-50">
+      <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
         <div className="max-w-6xl mx-auto px-4 py-8">
           <p className="text-stone-500">Unable to load products.</p>
-          <Link to="/" className="text-amber-900 font-medium hover:underline mt-2 inline-block">Back to home</Link>
+          <Link to="/" className={`${CLASSES.accentLink} font-medium mt-2 inline-block`}>Back to home</Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="text-xl font-semibold text-stone-900 tracking-tight">
-            ReVogue
-          </Link>
-          <Link to="/" className="text-sm text-stone-600 hover:text-stone-900">
-            Back to home
-          </Link>
-        </div>
-      </header>
+    <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
+      <UserHeader showBack />
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-wrap gap-2 mb-6">
@@ -122,7 +115,7 @@ export default function BrowsePage() {
               key={id}
               to={`/browse/${id}${tier ? `?tier=${tier}` : ""}`}
               className={`px-3 py-1.5 text-sm font-medium rounded-md ${
-                section === id ? "bg-stone-900 text-white" : "bg-stone-200 text-stone-700 hover:bg-stone-300"
+                section === id ? CLASSES.sectionActive : CLASSES.sectionInactive
               }`}
             >
               {lbl}
@@ -130,14 +123,14 @@ export default function BrowsePage() {
           ))}
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-          <h1 className="text-2xl font-semibold text-stone-900">{label}</h1>
+          <h1 className={`${CLASSES.heading} text-2xl font-semibold text-stone-900`}>{label}</h1>
           <div className="flex p-0.5 bg-stone-200/80 rounded-lg w-fit">
             {TIER_OPTIONS.map((opt) => (
               <button
                 key={opt.id}
                 onClick={() => setTier(opt.id)}
                 className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                  (tier || "all") === opt.id ? "bg-white text-stone-900 shadow-sm" : "text-stone-600 hover:text-stone-900"
+                  (tier || "all") === opt.id ? CLASSES.tierActive : CLASSES.tierInactive
                 }`}
               >
                 {opt.label}

@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { useLoginMutation } from "../store/api/authApi";
 import { setCredentials } from "../store/slices/authSlice";
 import { ROLES } from "../constants/roles";
+import { CLASSES } from "../constants/theme";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,10 +26,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className={`${CLASSES.userWrapper} min-h-screen flex items-center justify-center bg-gray-50 px-4`}>
       <div className="w-full max-w-md">
         <div className="bg-white shadow-md rounded-lg px-8 pt-8 pb-6">
-          <h1 className="text-2xl font-semibold text-gray-900 mb-6">Sign in</h1>
+          <h1 className={`${CLASSES.heading} text-2xl font-semibold text-gray-900 mb-6`}>Sign in</h1>
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-red-50 text-red-700 px-3 py-2 rounded text-sm">
@@ -45,7 +46,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                className={`w-full px-3 py-2 border border-gray-300 rounded ${CLASSES.inputFocus}`}
                 placeholder="you@example.com"
               />
             </div>
@@ -59,20 +60,20 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+                className={`w-full px-3 py-2 border border-gray-300 rounded ${CLASSES.inputFocus}`}
               />
             </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2.5 px-4 bg-indigo-600 text-white font-medium rounded hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className={`w-full py-2.5 px-4 ${CLASSES.primaryButton} font-medium rounded focus:ring-2 focus:ring-revogue-purple focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </form>
           <p className="mt-4 text-sm text-gray-600 text-center">
             No account?{" "}
-            <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-medium">
+            <Link to="/register" className={`${CLASSES.accentLink} font-medium`}>
               Sign up
             </Link>
           </p>

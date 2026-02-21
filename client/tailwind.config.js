@@ -1,8 +1,19 @@
+import { COLORS, FONTS } from "./src/constants/theme.js";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "revogue-purple": COLORS.PURPLE,
+        "revogue-gold": COLORS.GOLD,
+      },
+      fontFamily: {
+        "revogue-serif": [FONTS.SERIF, "Didot", "Georgia", "serif"],
+        "revogue-script": [FONTS.SCRIPT, "Georgia", "serif"],
+      },
+    },
   },
   plugins: [],
 };

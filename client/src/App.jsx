@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BrowsePage from "./pages/BrowsePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
@@ -43,6 +45,22 @@ function App() {
           element={
             <UserRoute>
               <ProductDetailPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/cart"
+          element={
+            <UserRoute>
+              <CartPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <UserRoute>
+              <CheckoutPage />
             </UserRoute>
           }
         />

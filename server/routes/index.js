@@ -5,6 +5,8 @@ import categoryRoutes from "./categories.js";
 import brandRoutes from "./brands.js";
 import vendorRoutes from "./vendor.js";
 import adminRoutes from "./admin.js";
+import cartRoutes from "./cart.js";
+import orderRoutes from "./orders.js";
 import * as healthController from "../controllers/healthController.js";
 
 const router = Router();
@@ -15,6 +17,8 @@ router.use("/categories", categoryRoutes);
 router.use("/brands", brandRoutes);
 router.use("/vendor", vendorRoutes);
 router.use("/admin", adminRoutes);
+router.use("/cart", cartRoutes);
+router.use("/orders", orderRoutes);
 router.get("/health", healthController.health);
 
 export default router;

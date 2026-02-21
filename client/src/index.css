@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ReVogue design tokens – CSS variables (from theme.js) */
+:root {
+  --revogue-purple: #6a1b7a;
+  --revogue-gold: #b88a2a;
+  --font-revogue-serif: "Bodoni Moda", Didot, Georgia, serif;
+  --font-revogue-script: "Cormorant Garamond", Georgia, serif;
+}
+
+/* User-facing typography – .revogue-user enables brand styling */
+.revogue-user {
+  font-family: var(--font-revogue-script);
+}
+.revogue-user h1,
+.revogue-user h2,
+.revogue-user h3,
+.revogue-user .font-revogue-serif {
+  font-family: var(--font-revogue-serif);
+}
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

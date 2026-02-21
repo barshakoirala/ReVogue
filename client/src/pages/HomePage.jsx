@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useGetMeQuery } from "../store/api/authApi";
+import { Link } from "react-router-dom";
 import { useGetProductsQuery } from "../store/api/productsApi";
-import { logout } from "../store/slices/authSlice";
-import { authApi } from "../store/api/authApi";
+import UserHeader from "../components/UserHeader";
+import { CLASSES } from "../constants/theme";
 
 const TIER_OPTIONS = [
   { id: "all", label: "All" },
@@ -42,7 +40,7 @@ function ProductCard({ product }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
         {tierLabel && (
-          <span className="absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider bg-amber-900/90 text-amber-50 rounded">
+          <span className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${CLASSES.luxuryBadge} rounded`}>
             {tierLabel}
           </span>
         )}
@@ -51,7 +49,7 @@ function ProductCard({ product }) {
         <p className="text-xs text-stone-500 uppercase tracking-wider mb-0.5 min-h-[1rem] line-clamp-1">
           {brandName || "\u00A0"}
         </p>
-        <h3 className="font-medium text-stone-900 line-clamp-2 group-hover:text-amber-800 flex-1 min-h-0">
+        <h3 className={`font-medium text-stone-900 line-clamp-2 ${CLASSES.cardHover} flex-1 min-h-0`}>
           {product.title}
         </h3>
         <p className="text-sm text-stone-600 mt-1 flex-shrink-0">
@@ -129,7 +127,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
+          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
         </div>
         <div className="flex gap-4 overflow-x-hidden">
           {[...Array(5)].map((_, i) => (
@@ -147,7 +145,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
+          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
         </div>
         <p className="text-stone-500 text-sm">Unable to load products.</p>
       </section>
@@ -158,7 +156,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
+          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
         </div>
         <p className="text-stone-500 text-sm">No products in this section.</p>
       </section>
@@ -171,7 +169,7 @@ function ProductSection({ title, tier, section, browseLink }) {
         <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
         <Link
           to={browseLink}
-          className="text-xs text-stone-500 uppercase tracking-wider hover:text-stone-900 transition-colors"
+          className={`text-xs text-stone-500 uppercase tracking-wider ${CLASSES.linkHover}`}
         >
           View all
         </Link>
@@ -205,83 +203,33 @@ function ProductSection({ title, tier, section, browseLink }) {
 
 export default function HomePage() {
   const [tierFilter, setTierFilter] = useState("all");
-  const token = useSelector((state) => state.auth.token);
-  const { data: user } = useGetMeQuery(undefined, { skip: !token });
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    dispatch(logout());
-    dispatch(authApi.util.resetApiState());
-    navigate("/login");
-  };
-
-  const isAuthenticated = !!token;
+  const tierFilterEl = (
+    <div
+      role="group"
+      aria-label="Filter by tier"
+      className="flex p-0.5 bg-stone-200/80 rounded-lg"
+    >
+      {TIER_OPTIONS.map((opt) => (
+        <button
+          key={opt.id}
+          onClick={() => setTierFilter(opt.id)}
+          className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            tierFilter === opt.id ? CLASSES.tierActive : CLASSES.tierInactive
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-stone-50">
-      <header className="bg-white border-b border-stone-200 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link
-            to="/"
-            className="text-xl font-semibold text-stone-900 tracking-tight"
-          >
-            ReVogue
-          </Link>
-          <div className="flex items-center gap-6">
-            <div
-              role="group"
-              aria-label="Filter by tier"
-              className="flex p-0.5 bg-stone-200/80 rounded-lg"
-            >
-              {TIER_OPTIONS.map((opt) => (
-                <button
-                  key={opt.id}
-                  onClick={() => setTierFilter(opt.id)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                    tierFilter === opt.id
-                      ? "bg-white text-stone-900 shadow-sm"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-            <nav className="flex gap-6 items-center">
-              {isAuthenticated ? (
-                <>
-                  <span className="text-sm text-stone-600">{user?.fullName}</span>
-                  <button
-                    onClick={handleLogout}
-                    className="text-sm text-stone-600 hover:text-stone-900"
-                  >
-                    Sign out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    to="/login"
-                    className="text-sm text-stone-600 hover:text-stone-900"
-                  >
-                    Sign in
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="text-sm font-medium text-amber-900 hover:text-amber-700"
-                  >
-                    Sign up
-                  </Link>
-                </>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
+    <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
+      <UserHeader centerContent={tierFilterEl} />
 
       <main>
-        <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
+        <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-[#4a1456] via-[#6A1B7A] to-stone-900">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-40"
             style={{
@@ -289,8 +237,8 @@ export default function HomePage() {
             }}
           />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <p className="text-amber-200/90 text-xs uppercase tracking-[0.3em] mb-3">Pre-loved luxury, reimagined</p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl">
+            <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.3em] mb-3`}>Pre-loved luxury, reimagined</p>
+            <h1 className={`${CLASSES.heading} text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl`}>
               Sustainable second-hand fashion
             </h1>
             <p className="text-stone-300 text-sm sm:text-base mt-4 max-w-md">
@@ -298,7 +246,7 @@ export default function HomePage() {
             </p>
             <Link
               to="/browse/all"
-              className="mt-8 px-8 py-3 border border-white/60 text-white text-sm font-medium tracking-wider uppercase hover:bg-white/10 transition-colors"
+              className="mt-8 px-8 py-3 border border-revogue-gold/60 text-revogue-gold text-sm font-medium tracking-wider uppercase hover:bg-revogue-gold/20 transition-colors"
             >
               Shop Now
             </Link>
@@ -317,8 +265,8 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 bg-stone-900/40" />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
-              <p className="text-amber-200/90 text-xs uppercase tracking-[0.2em] mb-1">Resale</p>
-              <h2 className="text-2xl font-light text-white tracking-tight">Luxury</h2>
+              <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Resale</p>
+              <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Luxury</h2>
               <p className="text-stone-300 text-sm mt-1">Designer pieces at a fraction</p>
             </div>
           </Link>
@@ -333,15 +281,15 @@ export default function HomePage() {
             />
             <div className="absolute inset-0 bg-stone-900/30" />
             <div className="absolute inset-0 flex flex-col justify-end p-6">
-              <p className="text-amber-200/90 text-xs uppercase tracking-[0.2em] mb-1">Curated</p>
-              <h2 className="text-2xl font-light text-white tracking-tight">Everyday</h2>
+              <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Curated</p>
+              <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Everyday</h2>
               <p className="text-stone-300 text-sm mt-1">Quality staples, gently worn</p>
             </div>
           </Link>
         </section>
 
         <section className="max-w-6xl mx-auto px-4 mt-16 py-12 border-y border-stone-200">
-          <p className="text-center text-stone-500 text-xs uppercase tracking-[0.25em]">
+          <p className={`${CLASSES.heading} text-center text-stone-500 text-xs uppercase tracking-[0.25em]`}>
             Shop the edit
           </p>
         </section>
@@ -366,7 +314,7 @@ export default function HomePage() {
                     }}
                   >
                     <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center">
-                      <p className="text-white/90 text-xs sm:text-sm uppercase tracking-[0.3em]">
+                      <p className={`${CLASSES.goldAccentMuted} text-xs sm:text-sm uppercase tracking-[0.3em]`}>
                         Fashion that lasts
                       </p>
                     </div>

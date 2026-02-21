@@ -17,3 +17,7 @@ export const PRODUCT_VALIDATION = {
 export const CATEGORY_VALIDATION = {
   NAME_REQUIRED: "Category name is required",
 };
+
+export const BRAND_VALIDATION = {
+  NAME_REQUIRED: "Brand name is required",
+};

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import User from "../models/User.js";
 import Category from "../models/Category.js";
+import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
 import { SEED_ADMIN, ROLES } from "../constants/index.js";
 
@@ -20,6 +21,43 @@ const CATEGORIES = [
     name: "Shoes",
     subcategories: ["Sneakers", "Sandals", "Boots", "Formal"],
   },
+];
+
+const BRANDS = [
+  "Levi's",
+  "H&M",
+  "Zara",
+  "Uniqlo",
+  "Mango",
+  "Massimo Dutti",
+  "Fossil",
+  "Clarks",
+  "Converse",
+  "& Other Stories",
+  "COS",
+  "Gap",
+  "Ted Baker",
+  "Nike",
+  "Dior",
+  "Cartier",
+  "Louis Vuitton",
+  "Chanel",
+  "Gucci",
+  "Prada",
+  "Hermès",
+  "Burberry",
+  "Saint Laurent",
+  "Balenciaga",
+  "Jimmy Choo",
+  "Christian Louboutin",
+  "Salvatore Ferragamo",
+  "Manolo Blahnik",
+  "Tod's",
+  "Rolex",
+  "Omega",
+  "Tag Heuer",
+  "Breitling",
+  "Longines",
 ];
 
 const PRODUCTS = [
@@ -98,6 +136,7 @@ async function seedDb() {
     }
 
     await Category.deleteMany({});
+    await Brand.deleteMany({});
     await Product.deleteMany({});
 
     const categoryMap = {};
@@ -112,10 +151,18 @@ async function seedDb() {
     }
     console.log("Categories created:", Object.keys(categoryMap).length, "parent, with subcategories");
 
+    const brandMap = {};
+    for (const name of BRANDS) {
+      const brand = await Brand.create({ name });
+      brandMap[name] = brand;
+    }
+    console.log("Brands created:", BRANDS.length);
+
     for (const p of PRODUCTS) {
       const parentCat = categoryMap[p.categoryName]?.parent;
       const subCat = categoryMap[p.categoryName]?.subcategories[p.subcategoryName];
       if (!parentCat || !subCat) continue;
+      const brandRef = p.brand ? brandMap[p.brand]?._id : null;
       await Product.create({
         title: p.title,
         description: p.description,
@@ -124,7 +171,7 @@ async function seedDb() {
         subcategory: subCat._id,
         condition: p.condition,
         size: p.size,
-        brand: p.brand,
+        brand: brandRef,
         images: [`https://picsum.photos/400/400?random=${Math.floor(Math.random() * 1000)}`],
         seller: admin._id,
         status: "active",

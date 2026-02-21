@@ -36,8 +36,8 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     brand: {
-      type: String,
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Brand",
     },
     images: {
       type: [String],

@@ -3,3 +3,4 @@ export * from "./validation.js";
 export * from "./messages.js";
 export * from "./seed.js";
 export * from "./auth.js";
+export * from "./product.js";

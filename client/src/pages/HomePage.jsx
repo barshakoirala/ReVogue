@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
 import { logout } from "../store/slices/authSlice";
@@ -6,15 +6,17 @@ import { authApi } from "../store/api/authApi";
 
 export default function HomePage() {
   const token = useSelector((state) => state.auth.token);
-  const { data: user, isSuccess } = useGetMeQuery(undefined, { skip: !token });
+  const { data: user } = useGetMeQuery(undefined, { skip: !token });
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     dispatch(logout());
     dispatch(authApi.util.resetApiState());
+    navigate("/login");
   };
 
-  const isAuthenticated = isSuccess && user;
+  const isAuthenticated = !!token;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -26,7 +28,7 @@ export default function HomePage() {
           <nav className="flex gap-4">
             {isAuthenticated ? (
               <>
-                <span className="text-gray-600 py-2">{user?.name}</span>
+                <span className="text-gray-600 py-2">{user?.fullName}</span>
                 <button
                   onClick={handleLogout}
                   className="text-gray-600 hover:text-gray-900"
@@ -53,7 +55,7 @@ export default function HomePage() {
           Sustainable second-hand clothing platform
         </p>
         {isAuthenticated ? (
-          <p className="text-gray-700">Welcome back, {user?.name}.</p>
+          <p className="text-gray-700">Welcome back, {user?.fullName}.</p>
         ) : (
           <div className="flex gap-4 justify-center">
             <Link

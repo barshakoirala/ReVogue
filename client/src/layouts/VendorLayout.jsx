@@ -1,10 +1,11 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
 import { logout } from "../store/slices/authSlice";
 import { authApi } from "../store/api/authApi";
 
 export default function VendorLayout() {
+  const location = useLocation();
   const token = useSelector((state) => state.auth.token);
   const { data: user } = useGetMeQuery(undefined, { skip: !token });
   const dispatch = useDispatch();
@@ -27,13 +28,13 @@ export default function VendorLayout() {
         <nav className="flex-1 p-4 space-y-1">
           <Link
             to="/vendor"
-            className="block px-3 py-2 rounded bg-gray-700 text-white"
+            className={`block px-3 py-2 rounded ${location.pathname === "/vendor" ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"}`}
           >
             Dashboard
           </Link>
           <Link
             to="/vendor/products"
-            className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-700 hover:text-white"
+            className={`block px-3 py-2 rounded ${location.pathname.startsWith("/vendor/products") ? "bg-gray-700 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"}`}
           >
             Products
           </Link>

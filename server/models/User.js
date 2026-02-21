@@ -1,30 +1,31 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import { ROLE_LIST, ROLES, USER_VALIDATION } from "../constants/index.js";
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, USER_VALIDATION.NAME_REQUIRED],
       trim: true,
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, USER_VALIDATION.EMAIL_REQUIRED],
       unique: true,
       lowercase: true,
       trim: true,
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      required: [true, USER_VALIDATION.PASSWORD_REQUIRED],
       minlength: 6,
       select: false,
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
-      default: "user",
+      enum: ROLE_LIST,
+      default: ROLES.USER,
     },
   },
   { timestamps: true }

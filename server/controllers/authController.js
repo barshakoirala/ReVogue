@@ -1,5 +1,5 @@
 import * as authService from "../services/authService.js";
-import { AppError } from "../utils/AppError.js";
+import { AUTH_MESSAGES } from "../constants/index.js";
 
 export async function register(req, res, next) {
   try {
@@ -7,7 +7,7 @@ export async function register(req, res, next) {
     const result = await authService.register({ name, email, password });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: AUTH_MESSAGES.REGISTER_SUCCESS,
       user: result.user,
       token: result.token,
     });
@@ -22,7 +22,7 @@ export async function login(req, res, next) {
     const result = await authService.login({ email, password });
 
     res.json({
-      message: "Login successful",
+      message: AUTH_MESSAGES.LOGIN_SUCCESS,
       user: result.user,
       token: result.token,
     });
@@ -41,7 +41,7 @@ export async function getMe(req, res, next) {
 
 export async function adminOnly(req, res, next) {
   try {
-    res.json({ message: "Admin access granted", user: req.user });
+    res.json({ message: AUTH_MESSAGES.ADMIN_ACCESS_GRANTED, user: req.user });
   } catch (err) {
     next(err);
   }

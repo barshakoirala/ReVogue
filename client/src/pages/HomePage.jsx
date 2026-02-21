@@ -129,7 +129,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
         </div>
         <div className="flex gap-4 overflow-x-hidden">
           {[...Array(5)].map((_, i) => (
@@ -147,7 +147,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
         </div>
         <p className="text-stone-500 text-sm">Unable to load products.</p>
       </section>
@@ -158,7 +158,7 @@ function ProductSection({ title, tier, section, browseLink }) {
     return (
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+          <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
         </div>
         <p className="text-stone-500 text-sm">No products in this section.</p>
       </section>
@@ -168,10 +168,10 @@ function ProductSection({ title, tier, section, browseLink }) {
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-stone-900">{title}</h2>
+        <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
         <Link
           to={browseLink}
-          className="text-sm text-amber-900 font-medium hover:underline"
+          className="text-xs text-stone-500 uppercase tracking-wider hover:text-stone-900 transition-colors"
         >
           View all
         </Link>
@@ -280,25 +280,100 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-stone-900 tracking-tight">
-            Sustainable second-hand fashion
-          </h1>
-          <p className="text-stone-500 text-sm mt-1">
-            Curated pre-loved pieces. Luxury and everyday.
-          </p>
-        </div>
+      <main>
+        <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-40"
+            style={{
+              backgroundImage: "url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80)",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+            <p className="text-amber-200/90 text-xs uppercase tracking-[0.3em] mb-3">Pre-loved luxury, reimagined</p>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl">
+              Sustainable second-hand fashion
+            </h1>
+            <p className="text-stone-300 text-sm sm:text-base mt-4 max-w-md">
+              Curated pieces from coveted brands. Luxury and everyday.
+            </p>
+            <Link
+              to="/browse/all"
+              className="mt-8 px-8 py-3 border border-white/60 text-white text-sm font-medium tracking-wider uppercase hover:bg-white/10 transition-colors"
+            >
+              Shop Now
+            </Link>
+          </div>
+        </section>
 
-        <div className="space-y-12">
-          {SECTIONS.map((sec) => (
-            <ProductSection
-              key={sec.id}
-              title={sec.label}
-              tier={tierFilter}
-              section={sec.id}
-              browseLink={`/browse/${sec.id}${tierFilter !== "all" ? `?tier=${tierFilter}` : ""}`}
+        <section className="max-w-6xl mx-auto px-4 mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Link
+            to="/browse/all?tier=luxury"
+            className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80"
+              alt="Luxury"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
+            <div className="absolute inset-0 bg-stone-900/40" />
+            <div className="absolute inset-0 flex flex-col justify-end p-6">
+              <p className="text-amber-200/90 text-xs uppercase tracking-[0.2em] mb-1">Resale</p>
+              <h2 className="text-2xl font-light text-white tracking-tight">Luxury</h2>
+              <p className="text-stone-300 text-sm mt-1">Designer pieces at a fraction</p>
+            </div>
+          </Link>
+          <Link
+            to="/browse/all?tier=normal"
+            className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80"
+              alt="Everyday"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-stone-900/30" />
+            <div className="absolute inset-0 flex flex-col justify-end p-6">
+              <p className="text-amber-200/90 text-xs uppercase tracking-[0.2em] mb-1">Curated</p>
+              <h2 className="text-2xl font-light text-white tracking-tight">Everyday</h2>
+              <p className="text-stone-300 text-sm mt-1">Quality staples, gently worn</p>
+            </div>
+          </Link>
+        </section>
+
+        <section className="max-w-6xl mx-auto px-4 mt-16 py-12 border-y border-stone-200">
+          <p className="text-center text-stone-500 text-xs uppercase tracking-[0.25em]">
+            Shop the edit
+          </p>
+        </section>
+
+        <div className="max-w-6xl mx-auto px-4 py-12 space-y-16">
+          {SECTIONS.map((sec, idx) => (
+            <div key={sec.id}>
+              <ProductSection
+                title={sec.label}
+                tier={tierFilter}
+                section={sec.id}
+                browseLink={`/browse/${sec.id}${tierFilter !== "all" ? `?tier=${tierFilter}` : ""}`}
+              />
+              {idx === 1 && (
+                <div className="mt-16">
+                  <div
+                    className="h-48 sm:h-64 rounded-xl overflow-hidden -mx-4 sm:mx-0 bg-stone-200 relative"
+                    style={{
+                      backgroundImage: "url(https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1200&q=80)",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center">
+                      <p className="text-white/90 text-xs sm:text-sm uppercase tracking-[0.3em]">
+                        Fashion that lasts
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </main>

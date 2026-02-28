@@ -46,6 +46,12 @@ export default function UserHeader({ showBack = false, centerContent }) {
                 My orders
               </Link>
               <Link
+                to="/donations"
+                className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
+              >
+                Donations
+              </Link>
+              <Link
                 to="/cart"
               className="relative p-2 text-stone-600 hover:text-stone-900 transition-colors"
               aria-label={`Cart (${cartCount} items)`}

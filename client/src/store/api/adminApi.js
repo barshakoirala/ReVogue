@@ -25,7 +25,7 @@ const baseQueryWithAuth = async (args, api, extraOptions) => {
 export const adminApi = createApi({
   reducerPath: "adminApi",
   baseQuery: baseQueryWithAuth,
-  tagTypes: ["AdminProducts", "AdminCategories", "AdminBrands"],
+  tagTypes: ["AdminProducts", "AdminCategories", "AdminBrands", "AdminDonations"],
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => "/admin/products",
@@ -75,6 +75,29 @@ export const adminApi = createApi({
       query: (id) => ({ url: `/admin/brands/${id}`, method: "DELETE" }),
       invalidatesTags: (_, __, id) => [{ type: "AdminBrands", id }, { type: "AdminBrands", id: "LIST" }],
     }),
+    getDonations: builder.query({
+      query: (donorId) => ({
+        url: "/admin/donations",
+        ...(donorId ? { params: { donor: donorId } } : {}),
+      }),
+      transformResponse: (res) => ({ donations: res.donations ?? [], donors: res.donors ?? [] }),
+      providesTags: (result) =>
+        result?.donations?.length
+          ? [
+              ...result.donations.map(({ _id }) => ({ type: "AdminDonations", id: _id })),
+              { type: "AdminDonations", id: "LIST" },
+            ]
+          : [{ type: "AdminDonations", id: "LIST" }],
+    }),
+    getDonors: builder.query({
+      query: () => "/admin/donations/donors",
+      transformResponse: (res) => res.donors ?? [],
+      providesTags: [{ type: "AdminDonations", id: "DONORS" }],
+    }),
+    getDonation: builder.query({
+      query: (id) => `/admin/donations/${id}`,
+      providesTags: (_result, _err, id) => [{ type: "AdminDonations", id }],
+    }),
   }),
 });
 
@@ -88,4 +111,7 @@ export const {
   useCreateBrandMutation,
   useUpdateBrandMutation,
   useDeleteBrandMutation,
+  useGetDonationsQuery,
+  useGetDonorsQuery,
+  useGetDonationQuery,
 } = adminApi;

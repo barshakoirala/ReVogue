@@ -5,6 +5,7 @@ import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
+import DonationsPage from "./pages/DonationsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
@@ -12,6 +13,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminProducts from "./pages/admin/AdminProducts";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminBrands from "./pages/admin/AdminBrands";
+import AdminDonations from "./pages/admin/AdminDonations";
+import AdminDonationDetail from "./pages/admin/AdminDonationDetail";
 import AdminRoute from "./components/AdminRoute";
 import VendorLayout from "./layouts/VendorLayout";
 import VendorDashboard from "./pages/vendor/VendorDashboard";
@@ -74,6 +77,14 @@ function App() {
           }
         />
         <Route
+          path="/donations"
+          element={
+            <UserRoute>
+              <DonationsPage />
+            </UserRoute>
+          }
+        />
+        <Route
           path="/admin"
           element={
             <AdminRoute>
@@ -85,6 +96,8 @@ function App() {
           <Route path="products" element={<AdminProducts />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="brands" element={<AdminBrands />} />
+          <Route path="donations" element={<AdminDonations />} />
+          <Route path="donations/:id" element={<AdminDonationDetail />} />
         </Route>
         <Route
           path="/vendor"

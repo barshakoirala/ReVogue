@@ -50,6 +50,12 @@ export default function AdminLayout() {
           >
             Brands
           </Link>
+          <Link
+            to="/admin/donations"
+            className={`block px-3 py-2 rounded ${location.pathname.startsWith("/admin/donations") ? "bg-gray-800 text-white" : "text-gray-400 hover:bg-gray-800 hover:text-white"}`}
+          >
+            Donations
+          </Link>
         </nav>
         <div className="p-4 border-t border-gray-800">
           <div className="flex items-center justify-between">

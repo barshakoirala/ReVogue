@@ -3,6 +3,7 @@ import { authenticate, authorize } from "../middleware/auth.js";
 import * as adminProductController from "../controllers/adminProductController.js";
 import * as adminCategoryController from "../controllers/adminCategoryController.js";
 import * as adminBrandController from "../controllers/adminBrandController.js";
+import * as adminDonationController from "../controllers/adminDonationController.js";
 import { ROLES } from "../constants/index.js";
 
 const router = Router();
@@ -21,5 +22,8 @@ router.post("/brands", adminBrandController.createBrand);
 router.get("/brands/:id", adminBrandController.getBrand);
 router.put("/brands/:id", adminBrandController.updateBrand);
 router.delete("/brands/:id", adminBrandController.deleteBrand);
+router.get("/donations", adminDonationController.getAllDonations);
+router.get("/donations/donors", adminDonationController.getDonors);
+router.get("/donations/:id", adminDonationController.getDonationById);
 
 export default router;

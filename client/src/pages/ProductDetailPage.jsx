@@ -102,6 +102,94 @@ export default function ProductDetailPage() {
             {product.description && (
               <p className="mt-4 text-stone-600">{product.description}</p>
             )}
+            {product.ecoSustainability &&
+              (product.ecoSustainability.carbonSavedKg != null ||
+                product.ecoSustainability.waterSavedLiters != null ||
+                product.ecoSustainability.wasteDivertedKg != null ||
+                product.ecoSustainability.energySavedKwh != null ||
+                product.ecoSustainability.landUseSavedSqm != null ||
+                product.ecoSustainability.equivalentItemsAvoided != null ||
+                product.ecoSustainability.microplasticsAvoidedG != null ||
+                product.ecoSustainability.recycledContentPercent != null ||
+                product.ecoSustainability.notes) && (
+              <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                  <h3 className={`${CLASSES.heading} text-sm font-semibold text-green-900 flex items-center gap-2`}>
+                    <span aria-hidden>🌱</span>
+                    Environmental impact
+                  </h3>
+                  {product.ecoScore != null && (
+                    <div className="flex items-center gap-2" title="Eco score 0–1 based on sustainability metrics">
+                      <span className="text-xs font-medium text-green-800">Eco score</span>
+                      <span className="inline-flex items-center justify-center min-w-[2.5rem] h-8 px-2 rounded-lg bg-green-200 text-green-900 font-semibold text-sm">
+                        {(product.ecoScore * 100).toFixed(0)}%
+                      </span>
+                      <div className="w-16 h-1.5 bg-green-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-green-600 rounded-full transition-all"
+                          style={{ width: `${Math.min(100, product.ecoScore * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                  {product.ecoSustainability.carbonSavedKg != null && (
+                    <div>
+                      <dt className="text-green-700">CO₂ saved</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.carbonSavedKg} kg</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.waterSavedLiters != null && (
+                    <div>
+                      <dt className="text-green-700">Water saved</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.waterSavedLiters} L</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.wasteDivertedKg != null && (
+                    <div>
+                      <dt className="text-green-700">Waste diverted</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.wasteDivertedKg} kg</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.energySavedKwh != null && (
+                    <div>
+                      <dt className="text-green-700">Energy saved</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.energySavedKwh} kWh</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.landUseSavedSqm != null && (
+                    <div>
+                      <dt className="text-green-700">Land use saved</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.landUseSavedSqm} m²</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.equivalentItemsAvoided != null && (
+                    <div>
+                      <dt className="text-green-700">New items avoided</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.equivalentItemsAvoided}</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.microplasticsAvoidedG != null && (
+                    <div>
+                      <dt className="text-green-700">Microplastics avoided</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.microplasticsAvoidedG} g</dd>
+                    </div>
+                  )}
+                  {product.ecoSustainability.recycledContentPercent != null && (
+                    <div>
+                      <dt className="text-green-700">Recycled content</dt>
+                      <dd className="font-medium text-green-900">{product.ecoSustainability.recycledContentPercent}%</dd>
+                    </div>
+                  )}
+                </dl>
+                {product.ecoSustainability.notes && (
+                  <p className="mt-3 text-sm text-green-800 border-t border-green-200 pt-3">
+                    {product.ecoSustainability.notes}
+                  </p>
+                )}
+              </div>
+            )}
             <div className="mt-6 pt-6 border-t border-stone-200">
               {isUser ? (
                 <>

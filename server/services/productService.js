@@ -1,6 +1,7 @@
 import Product from "../models/Product.js";
 import "../models/Category.js";
 import "../models/Brand.js";
+import { computeEcoScore } from "./vendorProductService.js";
 import {
   STATUS_ACTIVE,
   TIER_LUXURY,
@@ -17,6 +18,8 @@ export async function getProductById(id) {
     .populate("subcategory", "name")
     .populate("brand", "name")
     .lean();
+  if (product && product.ecoScore == null && product.ecoSustainability)
+    product.ecoScore = computeEcoScore(product.ecoSustainability);
   return product;
 }
 

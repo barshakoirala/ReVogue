@@ -52,6 +52,22 @@ const productSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    ecoSustainability: {
+      type: {
+        carbonSavedKg: { type: Number, min: 0 },
+        waterSavedLiters: { type: Number, min: 0 },
+        wasteDivertedKg: { type: Number, min: 0 },
+        energySavedKwh: { type: Number, min: 0 },
+        landUseSavedSqm: { type: Number, min: 0 },
+        equivalentItemsAvoided: { type: Number, min: 0 },
+        microplasticsAvoidedG: { type: Number, min: 0 },
+        recycledContentPercent: { type: Number, min: 0, max: 100 },
+        notes: { type: String, trim: true },
+      },
+      default: undefined,
+    },
+    /** 0–1 score derived from ecoSustainability metrics (computed on save). */
+    ecoScore: { type: Number, min: 0, max: 1 },
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

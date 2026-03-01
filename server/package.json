@@ -8,7 +8,10 @@
     "start": "node index.js",
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:db": "node scripts/seedDb.js",
-    "seed:eco": "node scripts/seedProductEcoMetrics.js"
+    "seed:slots": "node scripts/assignOutfitSlots.js",
+    "seed:eco": "node scripts/seedProductEcoMetrics.js",
+    "seed:embeddings": "node scripts/seedEmbeddings.js",
+    "backfill:embeddings": "node scripts/backfillEmbeddings.js"
   },
   "dependencies": {
     "express": "^4.21.0",

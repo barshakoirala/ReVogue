@@ -1,4 +1,5 @@
 import * as vendorProductService from "../services/vendorProductService.js";
+import { scheduleEmbeddingUpdate } from "../services/embeddingService.js";
 
 export async function getMyProducts(req, res, next) {
   try {
@@ -27,6 +28,7 @@ export async function getMyProduct(req, res, next) {
 export async function createProduct(req, res, next) {
   try {
     const product = await vendorProductService.createProduct(req.user._id, req.body);
+    scheduleEmbeddingUpdate(product._id.toString());
     res.status(201).json(product);
   } catch (err) {
     next(err);
@@ -43,6 +45,7 @@ export async function updateProduct(req, res, next) {
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
+    scheduleEmbeddingUpdate(product._id.toString());
     res.json(product);
   } catch (err) {
     next(err);

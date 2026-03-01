@@ -8,6 +8,22 @@ import { SEED_ADMIN, ROLES } from "../constants/index.js";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/revogue";
 
+/** Subcategory name -> outfitSlot for AI Stylist (stored in DB). */
+const SUBCATEGORY_OUTFIT_SLOT = {
+  Tops: "top",
+  Bottoms: "bottom",
+  Dresses: "onepiece",
+  Outerwear: "outerwear",
+  Bags: "accessory",
+  Jewelry: "accessory",
+  Hats: "accessory",
+  Scarves: "accessory",
+  Sneakers: "shoes",
+  Sandals: "shoes",
+  Boots: "shoes",
+  Formal: "shoes",
+};
+
 const CATEGORIES = [
   {
     name: "Clothing",
@@ -152,7 +168,8 @@ async function seedDb() {
       const parent = await Category.create({ name: cat.name, parent: null });
       categoryMap[cat.name] = { parent, subcategories: {} };
       for (const subName of cat.subcategories) {
-        const sub = await Category.create({ name: subName, parent: parent._id });
+        const outfitSlot = SUBCATEGORY_OUTFIT_SLOT[subName] ?? null;
+        const sub = await Category.create({ name: subName, parent: parent._id, outfitSlot });
         categoryMap[cat.name].subcategories[subName] = sub;
       }
     }

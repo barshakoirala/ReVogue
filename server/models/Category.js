@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { CATEGORY_VALIDATION } from "../constants/index.js";
 
+const OUTFIT_SLOT_VALUES = ["top", "bottom", "onepiece", "outerwear", "shoes", "accessory"];
+
 const categorySchema = new mongoose.Schema(
   {
     name: {
@@ -16,6 +18,12 @@ const categorySchema = new mongoose.Schema(
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
+      default: null,
+    },
+    /** For AI Stylist "goes with": which outfit slot this category belongs to (subcategories only). */
+    outfitSlot: {
+      type: String,
+      enum: OUTFIT_SLOT_VALUES,
       default: null,
     },
   },

@@ -23,10 +23,19 @@ export async function getProductById(id) {
   return product;
 }
 
-export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT, page }) {
+export async function getProducts({ tier, section, limit = HOME_SECTION_LIMIT, page, search }) {
   const filter = { status: STATUS_ACTIVE };
   if (tier === TIER_LUXURY || tier === TIER_NORMAL) {
     filter.tier = tier;
+  }
+
+  if (search && typeof search === "string" && search.trim()) {
+    const term = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const regex = new RegExp(term, "i");
+    filter.$or = [
+      { title: regex },
+      { description: regex },
+    ];
   }
 
   if (section === PRODUCT_SECTION.TRENDING) {

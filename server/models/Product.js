@@ -78,6 +78,12 @@ const productSchema = new mongoose.Schema(
       enum: PRODUCT_STATUS,
       default: "active",
     },
+    /** Text embedding vector for "goes with" similarity (e.g. OpenAI text-embedding-3-small). */
+    embedding: {
+      type: [Number],
+      default: undefined,
+      select: false,
+    },
   },
   { timestamps: true }
 );

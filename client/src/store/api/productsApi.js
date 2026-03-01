@@ -16,14 +16,25 @@ export const productsApi = createApi({
       transformResponse: (res) => res.products,
     }),
     getProductsPaginated: builder.query({
-      query: ({ tier, section, page = 1, limit = 12 } = {}) => {
+      query: ({ tier, section, page = 1, limit = 12, search } = {}) => {
         const params = new URLSearchParams();
         if (tier) params.set("tier", tier);
         if (section) params.set("section", section);
+        if (search) params.set("search", search);
         params.set("page", page);
         params.set("limit", limit);
         return `/products?${params}`;
       },
+    }),
+    getGoesWith: builder.query({
+      query: ({ productIds, limit = 8 } = {}) => {
+        const ids = Array.isArray(productIds) ? productIds : [];
+        const params = new URLSearchParams();
+        if (ids.length > 0) params.set("productIds", ids.join(","));
+        params.set("limit", String(limit));
+        return `/products/goes-with?${params}`;
+      },
+      transformResponse: (res) => res.products,
     }),
     getProduct: builder.query({
       query: (id) => `/products/${id}`,
@@ -45,4 +56,5 @@ export const {
   useGetProductQuery,
   useGetCategoriesQuery,
   useGetBrandsQuery,
+  useGetGoesWithQuery,
 } = productsApi;

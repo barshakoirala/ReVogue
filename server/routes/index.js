@@ -8,6 +8,7 @@ import adminRoutes from "./admin.js";
 import cartRoutes from "./cart.js";
 import orderRoutes from "./orders.js";
 import donationRoutes from "./donations.js";
+import wardrobeRoutes from "./wardrobe.js";
 import * as healthController from "../controllers/healthController.js";
 
 const router = Router();
@@ -21,6 +22,7 @@ router.use("/admin", adminRoutes);
 router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
 router.use("/donations", donationRoutes);
+router.use("/wardrobe", wardrobeRoutes);
 router.get("/health", healthController.health);
 
 export default router;

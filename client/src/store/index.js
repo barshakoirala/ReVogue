@@ -8,6 +8,7 @@ import { adminApi } from "./api/adminApi";
 import { cartApi } from "./api/cartApi";
 import { orderApi } from "./api/orderApi";
 import { donationApi } from "./api/donationApi";
+import { wardrobeApi } from "./api/wardrobeApi";
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     [cartApi.reducerPath]: cartApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [donationApi.reducerPath]: donationApi.reducer,
+    [wardrobeApi.reducerPath]: wardrobeApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,7 +30,8 @@ export const store = configureStore({
       adminApi.middleware,
       cartApi.middleware,
       orderApi.middleware,
-      donationApi.middleware
+      donationApi.middleware,
+      wardrobeApi.middleware
     ),
 });
 

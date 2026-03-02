@@ -7,6 +7,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
 import DonationsPage from "./pages/DonationsPage";
 import SearchPage from "./pages/SearchPage";
+import VirtualWardrobePage from "./pages/VirtualWardrobePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AdminLayout from "./layouts/AdminLayout";
@@ -82,6 +83,14 @@ function App() {
           element={
             <UserRoute>
               <DonationsPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/virtual-wardrobe"
+          element={
+            <UserRoute>
+              <VirtualWardrobePage />
             </UserRoute>
           }
         />

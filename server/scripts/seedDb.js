@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
+import WardrobeItem from "../models/WardrobeItem.js";
 import { SEED_ADMIN, ROLES } from "../constants/index.js";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/revogue";
@@ -112,6 +113,99 @@ const PRODUCTS = [
   { title: "Christian Louboutin Pigalle", description: "Black patent leather pumps.", price: 450, condition: "Like New", size: "38", brand: "Christian Louboutin", categoryName: "Shoes", subcategoryName: "Formal", tier: "luxury" },
 ];
 
+const WARDROBE_ITEMS = [
+  {
+    title: "Own Vintage Denim Jacket",
+    categoryName: "Clothing",
+    subcategoryName: "Outerwear",
+    brand: "Levi's",
+    size: "M",
+    condition: "Good",
+    color: "Blue",
+  },
+  {
+    title: "Own Black Skinny Jeans",
+    categoryName: "Clothing",
+    subcategoryName: "Bottoms",
+    brand: "Zara",
+    size: "M",
+    condition: "Like New",
+    color: "Black",
+  },
+  {
+    title: "Own White Oversized Tee",
+    categoryName: "Clothing",
+    subcategoryName: "Tops",
+    brand: "Uniqlo",
+    size: "L",
+    condition: "Good",
+    color: "White",
+  },
+  {
+    title: "Own Olive Hoodie",
+    categoryName: "Clothing",
+    subcategoryName: "Tops",
+    brand: "Gap",
+    size: "M",
+    condition: "Good",
+    color: "Olive",
+  },
+  {
+    title: "Own Black Blazer",
+    categoryName: "Clothing",
+    subcategoryName: "Outerwear",
+    brand: "Ted Baker",
+    size: "M",
+    condition: "Like New",
+    color: "Black",
+  },
+  {
+    title: "Own Everyday Sneakers",
+    categoryName: "Shoes",
+    subcategoryName: "Sneakers",
+    brand: "Nike",
+    size: "40",
+    condition: "Good",
+    color: "White",
+  },
+  {
+    title: "Own Leather Chelsea Boots",
+    categoryName: "Shoes",
+    subcategoryName: "Boots",
+    brand: "Clarks",
+    size: "40",
+    condition: "Good",
+    color: "Brown",
+  },
+  {
+    title: "Own Canvas Tote Bag",
+    categoryName: "Accessories",
+    subcategoryName: "Bags",
+    brand: null,
+    size: null,
+    condition: "Good",
+    color: "Beige",
+  },
+  {
+    title: "Own Silk Scarf",
+    categoryName: "Accessories",
+    subcategoryName: "Scarves",
+    brand: null,
+    size: null,
+    condition: "Like New",
+    color: "Multicolor",
+  },
+  {
+    title: "Own Gold Hoop Earrings",
+    categoryName: "Accessories",
+    subcategoryName: "Jewelry",
+    brand: null,
+    size: null,
+    condition: "New",
+    color: "Gold",
+  },
+];
+
 async function seedDb() {
   try {
     await mongoose.connect(MONGO_URI);
@@ -161,6 +255,7 @@ async function seedDb() {
     await Category.deleteMany({});
     await Brand.deleteMany({});
     await Product.deleteMany({});
+    await WardrobeItem.deleteMany({});
 
     const categoryMap = {};
 
@@ -204,6 +299,27 @@ async function seedDb() {
       });
     }
     console.log("Products created:", PRODUCTS.length);
+
+    // Seed some wardrobe items for a specific user (virtual wardrobe seed)
+    for (const w of WARDROBE_ITEMS) {
+      const parentCat = categoryMap[w.categoryName]?.parent;
+      const subCat = categoryMap[w.categoryName]?.subcategories[w.subcategoryName];
+      if (!parentCat || !subCat) continue;
+      const brandRef = w.brand ? brandMap[w.brand]?._id : null;
+      await WardrobeItem.create({
+        owner: new mongoose.Types.ObjectId("69997bc8f75cbadfb89f7380"),
+        title: w.title,
+        notes: "",
+        category: parentCat._id,
+        subcategory: subCat._id,
+        brand: brandRef,
+        size: w.size,
+        condition: w.condition,
+        color: w.color,
+        images: [`https://picsum.photos/320/320?random=${Math.floor(Math.random() * 1000)}`],
+      });
+    }
+    console.log("Wardrobe items created:", WARDROBE_ITEMS.length);
     console.log("Seed complete");
   } catch (err) {
     console.error("Seed failed:", err.message);

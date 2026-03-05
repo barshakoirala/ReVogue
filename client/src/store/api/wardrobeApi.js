@@ -63,6 +63,16 @@ export const wardrobeApi = createApi({
         { type: "Wardrobe", id: "LIST" },
       ],
     }),
+    getStyleSuggestions: builder.query({
+      query: ({ wardrobeItemIds, targetSubcategoryId }) => {
+        const params = new URLSearchParams();
+        if (Array.isArray(wardrobeItemIds) && wardrobeItemIds.length)
+          params.set("wardrobeItemIds", wardrobeItemIds.join(","));
+        if (targetSubcategoryId) params.set("targetSubcategoryId", targetSubcategoryId);
+        return `/wardrobe/style-suggestions?${params.toString()}`;
+      },
+      transformResponse: (res) => res.suggestions ?? [],
+    }),
   }),
 });
 
@@ -71,5 +81,6 @@ export const {
   useCreateWardrobeItemMutation,
   useUpdateWardrobeItemMutation,
   useDeleteWardrobeItemMutation,
+  useLazyGetStyleSuggestionsQuery,
 } = wardrobeApi;
 

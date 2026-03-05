@@ -94,3 +94,35 @@ export async function deleteWardrobeItem(itemId, ownerId) {
   return result.deletedCount === 1;
 }
 
+/**
+ * Get wardrobe items that "go with" the selected items, in the target subcategory.
+ * Returns other items from the same user's wardrobe in that subcategory (excludes selected).
+ * @param {string} ownerId
+ * @param {Object} options
+ * @param {string[]} options.wardrobeItemIds - selected wardrobe item IDs
+ * @param {string} options.targetSubcategoryId - subcategory to suggest (e.g. Bottoms)
+ * @param {number} [options.limit=20]
+ * @returns {Promise<Array>} wardrobe items with category/subcategory populated
+ */
+export async function getStyleSuggestions(ownerId, { wardrobeItemIds, targetSubcategoryId, limit = 20 }) {
+  if (!targetSubcategoryId || !Array.isArray(wardrobeItemIds)) {
+    return [];
+  }
+  const ids = wardrobeItemIds.filter((id) => id && typeof id === "string");
+  const excludeIds = ids.map((id) => id);
+
+  const items = await WardrobeItem.find({
+    owner: ownerId,
+    subcategory: targetSubcategoryId,
+    _id: { $nin: excludeIds },
+  })
+    .populate("category", "name")
+    .populate("subcategory", "name")
+    .populate("brand", "name")
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .lean();
+
+  return items;
+}
+

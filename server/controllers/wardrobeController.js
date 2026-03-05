@@ -9,6 +9,25 @@ export async function getMyWardrobe(req, res, next) {
   }
 }
 
+export async function getStyleSuggestions(req, res, next) {
+  try {
+    const wardrobeItemIds =
+      typeof req.query.wardrobeItemIds === "string"
+        ? req.query.wardrobeItemIds.split(",").map((s) => s.trim()).filter(Boolean)
+        : Array.isArray(req.query.wardrobeItemIds)
+          ? req.query.wardrobeItemIds.filter((id) => id)
+          : [];
+    const targetSubcategoryId = req.query.targetSubcategoryId || null;
+    const suggestions = await wardrobeService.getStyleSuggestions(req.user._id, {
+      wardrobeItemIds,
+      targetSubcategoryId,
+    });
+    res.json({ suggestions });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getMyWardrobeItem(req, res, next) {
   try {
     const item = await wardrobeService.getMyWardrobeItemById(

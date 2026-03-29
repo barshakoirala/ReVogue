@@ -10,5 +10,6 @@ router.use(authorize(ROLES.USER));
 
 router.post("/checkout", orderController.checkout);
 router.get("/", orderController.getMyOrders);
+router.get("/:orderId", orderController.getMyOrderById);
 
 export default router;

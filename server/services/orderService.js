@@ -31,6 +31,7 @@ export async function createOrderFromCart(userId, shippingAddress) {
     items,
     shippingAddress,
     subtotal,
+    paymentStatus: "pending",
     status: "pending",
   });
 
@@ -38,6 +39,17 @@ export async function createOrderFromCart(userId, shippingAddress) {
   await cart.save();
 
   return order.toObject();
+}
+
+export async function getMyOrderById(userId, orderId) {
+  const order = await Order.findOne({ _id: orderId, buyer: userId })
+    .populate({
+      path: "items.product",
+      select: "title images",
+      populate: { path: "brand", select: "name" },
+    })
+    .lean();
+  return order;
 }
 
 export async function getMyOrders(userId) {

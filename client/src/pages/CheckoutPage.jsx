@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { CLASSES } from "../constants/theme";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetMeQuery } from "../store/api/authApi";
 import { cartApi, useGetCartQuery } from "../store/api/cartApi";
 import { useCheckoutMutation } from "../store/api/orderApi";
 import UserHeader from "../components/UserHeader";
+import OrderPaymentActions from "../components/OrderPaymentActions";
 
 const INITIAL_FORM = {
   fullName: "",
@@ -20,8 +21,9 @@ const INITIAL_FORM = {
 
 export default function CheckoutPage() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [form, setForm] = useState(INITIAL_FORM);
+  const [placedOrder, setPlacedOrder] = useState(null);
+  const [checkoutError, setCheckoutError] = useState("");
 
   const token = useSelector((state) => state.auth.token);
   const { data: user } = useGetMeQuery(undefined, { skip: !token });
@@ -41,12 +43,14 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setCheckoutError("");
     try {
-      await checkout(form).unwrap();
+      const order = await checkout(form).unwrap();
       dispatch(cartApi.util.invalidateTags(["Cart"]));
-      navigate("/orders?success=1");
+      setPlacedOrder(order);
     } catch (err) {
-      console.error(err);
+      const msg = err?.data?.message || err?.message || "Checkout failed";
+      setCheckoutError(msg);
     }
   };
 
@@ -95,8 +99,35 @@ export default function CheckoutPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <h1 className={`${CLASSES.heading} text-2xl font-semibold text-stone-900 mb-6`}>Checkout</h1>
 
+        {placedOrder ? (
+          <div className="max-w-xl mx-auto space-y-6">
+            <div className="bg-white rounded-xl border border-stone-200 p-6">
+              <h2 className={`${CLASSES.heading} text-lg font-semibold text-stone-900 mb-2`}>
+                Order created
+              </h2>
+              <p className="text-sm text-stone-600 mb-4">
+                Order #{placedOrder._id?.slice(-6).toUpperCase()} · NPR{" "}
+                {placedOrder.subtotal?.toLocaleString()} — complete payment to confirm.
+              </p>
+              <OrderPaymentActions order={placedOrder} />
+              <div className="mt-6 pt-4 border-t border-stone-100">
+                <Link
+                  to="/orders"
+                  className={`text-sm font-medium ${CLASSES.accentLink}`}
+                >
+                  Pay later — view in My orders
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
+            {checkoutError && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+                {checkoutError}
+              </div>
+            )}
             <div className="bg-white rounded-xl border border-stone-200 p-6">
               <h2 className={`${CLASSES.heading} text-lg font-semibold text-stone-900 mb-4`}>Shipping address</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -205,11 +236,12 @@ export default function CheckoutPage() {
                 disabled={placing}
                 className={`mt-6 w-full py-3 ${CLASSES.primaryButtonDark} text-sm font-medium tracking-wider uppercase disabled:opacity-70 transition-colors`}
               >
-                {placing ? "Placing order…" : "Place order"}
+                {placing ? "Placing order…" : "Continue to payment"}
               </button>
             </div>
           </div>
         </form>
+        )}
       </main>
     </div>
   );

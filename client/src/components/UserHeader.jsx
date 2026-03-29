@@ -56,6 +56,12 @@ export default function UserHeader({ showBack = false, centerContent }) {
                 My orders
               </Link>
               <Link
+                to="/payments"
+                className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
+              >
+                Payments
+              </Link>
+              <Link
                 to="/virtual-wardrobe"
                 className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
               >

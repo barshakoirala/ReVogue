@@ -13,9 +13,14 @@ const STATUS_LABELS = {
   cancelled: "Cancelled",
 };
 
+function orderNeedsPayment(order) {
+  return order.paymentStatus === "pending";
+}
+
 export default function OrdersPage() {
   const [searchParams] = useSearchParams();
   const showSuccess = searchParams.get("success") === "1";
+  const showPaid = searchParams.get("paid") === "1";
 
   const token = useSelector((state) => state.auth.token);
   const { data: user } = useGetMeQuery(undefined, { skip: !token });
@@ -56,6 +61,12 @@ export default function OrdersPage() {
           My orders
         </h1>
 
+        {showPaid && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 text-sm">
+            Payment received. Your order is confirmed.
+          </div>
+        )}
+
         {showSuccess && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800 text-sm">
             Order placed successfully. Thank you for shopping with ReVogue.
@@ -95,7 +106,20 @@ export default function OrdersPage() {
                       Order #{order._id?.slice(-6).toUpperCase()}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap justify-end">
+                    {orderNeedsPayment(order) && (
+                      <Link
+                        to={`/orders/${order._id}/pay`}
+                        className="px-2 py-0.5 text-xs font-medium rounded bg-revogue-purple/10 text-revogue-purple hover:bg-revogue-purple/20"
+                      >
+                        Pay now
+                      </Link>
+                    )}
+                    {orderNeedsPayment(order) && (
+                      <span className="px-2 py-0.5 text-xs font-medium rounded bg-orange-100 text-orange-900">
+                        Payment due
+                      </span>
+                    )}
                     <span
                       className={`px-2 py-0.5 text-xs font-medium rounded ${
                         order.status === "delivered"

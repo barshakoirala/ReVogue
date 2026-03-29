@@ -4,6 +4,11 @@ import BrowsePage from "./pages/BrowsePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import PayOrderPage from "./pages/PayOrderPage";
+import PaymentsHistoryPage from "./pages/PaymentsHistoryPage";
+import EsewaReturnPage from "./pages/payment/EsewaReturnPage";
+import EsewaFailurePage from "./pages/payment/EsewaFailurePage";
+import KhaltiReturnPage from "./pages/payment/KhaltiReturnPage";
 import OrdersPage from "./pages/OrdersPage";
 import DonationsPage from "./pages/DonationsPage";
 import SearchPage from "./pages/SearchPage";
@@ -67,6 +72,46 @@ function App() {
           element={
             <UserRoute>
               <CheckoutPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/orders/:orderId/pay"
+          element={
+            <UserRoute>
+              <PayOrderPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/payments"
+          element={
+            <UserRoute>
+              <PaymentsHistoryPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/payment/esewa/return"
+          element={
+            <UserRoute>
+              <EsewaReturnPage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/payment/esewa/failure"
+          element={
+            <UserRoute>
+              <EsewaFailurePage />
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/payment/khalti/return"
+          element={
+            <UserRoute>
+              <KhaltiReturnPage />
             </UserRoute>
           }
         />

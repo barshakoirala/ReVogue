@@ -7,6 +7,7 @@ import { vendorProductsApi } from "./api/vendorProductsApi";
 import { adminApi } from "./api/adminApi";
 import { cartApi } from "./api/cartApi";
 import { orderApi } from "./api/orderApi";
+import { paymentApi } from "./api/paymentApi";
 import { donationApi } from "./api/donationApi";
 import { wardrobeApi } from "./api/wardrobeApi";
 
@@ -19,6 +20,7 @@ export const store = configureStore({
     [adminApi.reducerPath]: adminApi.reducer,
     [cartApi.reducerPath]: cartApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [paymentApi.reducerPath]: paymentApi.reducer,
     [donationApi.reducerPath]: donationApi.reducer,
     [wardrobeApi.reducerPath]: wardrobeApi.reducer,
   },
@@ -30,6 +32,7 @@ export const store = configureStore({
       adminApi.middleware,
       cartApi.middleware,
       orderApi.middleware,
+      paymentApi.middleware,
       donationApi.middleware,
       wardrobeApi.middleware
     ),

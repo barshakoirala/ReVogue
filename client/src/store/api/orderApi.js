@@ -27,6 +27,10 @@ export const orderApi = createApi({
       query: (body) => ({ url: "/orders/checkout", method: "POST", body }),
       invalidatesTags: ["Orders", "Cart"],
     }),
+    getOrderById: builder.query({
+      query: (orderId) => `/orders/${orderId}`,
+      providesTags: (result, _err, orderId) => [{ type: "Orders", id: orderId }],
+    }),
     getMyOrders: builder.query({
       query: () => "/orders",
       transformResponse: (res) => res.orders ?? [],
@@ -38,4 +42,4 @@ export const orderApi = createApi({
   }),
 });
 
-export const { useCheckoutMutation, useGetMyOrdersQuery } = orderApi;
+export const { useCheckoutMutation, useGetOrderByIdQuery, useGetMyOrdersQuery } = orderApi;

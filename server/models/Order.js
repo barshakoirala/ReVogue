@@ -29,6 +29,13 @@ const orderSchema = new mongoose.Schema(
     items: [orderItemSchema],
     shippingAddress: shippingAddressSchema,
     subtotal: { type: Number, required: true, min: 0 },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "paid"],
+      default: "pending",
+    },
+    paidAt: { type: Date, default: null },
+    paymentGateway: { type: String, enum: ["esewa", "khalti"] },
     status: {
       type: String,
       enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],

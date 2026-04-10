@@ -74,6 +74,18 @@ export default function UserHeader({ showBack = false, centerContent }) {
                 Donations
               </Link>
               <Link
+                to="/eco"
+                className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
+              >
+                🌱 Eco Impact
+              </Link>
+              <Link
+                to="/contact"
+                className={`text-sm text-stone-600 ${CLASSES.linkHover}`}
+              >
+                Contact
+              </Link>
+              <Link
                 to="/cart"
               className="relative p-2 text-stone-600 hover:text-stone-900 transition-colors"
               aria-label={`Cart (${cartCount} items)`}
@@ -111,6 +123,9 @@ export default function UserHeader({ showBack = false, centerContent }) {
               </>
             ) : (
               <>
+                <Link to="/contact" className={`text-sm text-stone-600 ${CLASSES.linkHover}`}>
+                  Contact
+                </Link>
                 <Link to="/login" className="text-sm text-stone-600 hover:text-stone-900">
                   Sign in
                 </Link>

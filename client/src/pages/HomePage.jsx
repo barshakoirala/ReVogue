@@ -229,70 +229,74 @@ export default function HomePage() {
       <UserHeader centerContent={tierFilterEl} />
 
       <main>
-        <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-[#4a1456] via-[#6A1B7A] to-stone-900">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-40"
-            style={{
-              backgroundImage: "url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80)",
-            }}
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-            <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.3em] mb-3`}>Pre-loved luxury, reimagined</p>
-            <h1 className={`${CLASSES.heading} text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl`}>
-              Sustainable second-hand fashion
-            </h1>
-            <p className="text-stone-300 text-sm sm:text-base mt-4 max-w-md">
-              Curated pieces from coveted brands. Luxury and everyday.
-            </p>
-            <Link
-              to="/browse/all"
-              className="mt-8 px-8 py-3 border border-revogue-gold/60 text-revogue-gold text-sm font-medium tracking-wider uppercase hover:bg-revogue-gold/20 transition-colors"
-            >
-              Shop Now
-            </Link>
-          </div>
-        </section>
+        {tierFilter === "all" && (
+          <>
+            <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-[#4a1456] via-[#6A1B7A] to-stone-900">
+              <div
+                className="absolute inset-0 bg-cover bg-center opacity-40"
+                style={{
+                  backgroundImage: "url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80)",
+                }}
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.3em] mb-3`}>Pre-loved luxury, reimagined</p>
+                <h1 className={`${CLASSES.heading} text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl`}>
+                  Sustainable second-hand fashion
+                </h1>
+                <p className="text-stone-300 text-sm sm:text-base mt-4 max-w-md">
+                  Curated pieces from coveted brands. Luxury and everyday.
+                </p>
+                <Link
+                  to="/browse"
+                  className="mt-8 px-8 py-3 border border-revogue-gold/60 text-revogue-gold text-sm font-medium tracking-wider uppercase hover:bg-revogue-gold/20 transition-colors"
+                >
+                  Shop Now
+                </Link>
+              </div>
+            </section>
 
-        <section className="max-w-6xl mx-auto px-4 mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Link
-            to="/browse/all?tier=luxury"
-            className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80"
-              alt="Luxury"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-stone-900/40" />
-            <div className="absolute inset-0 flex flex-col justify-end p-6">
-              <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Resale</p>
-              <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Luxury</h2>
-              <p className="text-stone-300 text-sm mt-1">Designer pieces at a fraction</p>
-            </div>
-          </Link>
-          <Link
-            to="/browse/all?tier=normal"
-            className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
-          >
-            <img
-              src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80"
-              alt="Everyday"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-stone-900/30" />
-            <div className="absolute inset-0 flex flex-col justify-end p-6">
-              <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Curated</p>
-              <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Everyday</h2>
-              <p className="text-stone-300 text-sm mt-1">Quality staples, gently worn</p>
-            </div>
-          </Link>
-        </section>
+            <section className="max-w-6xl mx-auto px-4 mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Link
+                to="/browse?tab=luxury"
+                className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80"
+                  alt="Luxury"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-stone-900/40" />
+                <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Resale</p>
+                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Luxury</h2>
+                  <p className="text-stone-300 text-sm mt-1">Designer pieces at a fraction</p>
+                </div>
+              </Link>
+              <Link
+                to="/browse?tab=normal"
+                className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
+              >
+                <img
+                  src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80"
+                  alt="Everyday"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-stone-900/30" />
+                <div className="absolute inset-0 flex flex-col justify-end p-6">
+                  <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Curated</p>
+                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Everyday</h2>
+                  <p className="text-stone-300 text-sm mt-1">Quality staples, gently worn</p>
+                </div>
+              </Link>
+            </section>
 
-        <section className="max-w-6xl mx-auto px-4 mt-16 py-12 border-y border-stone-200">
-          <p className={`${CLASSES.heading} text-center text-stone-500 text-xs uppercase tracking-[0.25em]`}>
-            Shop the edit
-          </p>
-        </section>
+            <section className="max-w-6xl mx-auto px-4 mt-16 py-12 border-y border-stone-200">
+              <p className={`${CLASSES.heading} text-center text-stone-500 text-xs uppercase tracking-[0.25em]`}>
+                Shop the edit
+              </p>
+            </section>
+          </>
+        )}
 
         <div className="max-w-6xl mx-auto px-4 py-12 space-y-16">
           {SECTIONS.map((sec, idx) => (
@@ -301,7 +305,7 @@ export default function HomePage() {
                 title={sec.label}
                 tier={tierFilter}
                 section={sec.id}
-                browseLink={`/browse/${sec.id}${tierFilter !== "all" ? `?tier=${tierFilter}` : ""}`}
+                browseLink={`/browse?tab=all`}
               />
               {idx === 1 && (
                 <div className="mt-16">

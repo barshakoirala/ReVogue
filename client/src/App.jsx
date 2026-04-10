@@ -28,6 +28,8 @@ import VendorDashboard from "./pages/vendor/VendorDashboard";
 import VendorProducts from "./pages/vendor/VendorProducts";
 import VendorRoute from "./components/VendorRoute";
 import UserRoute from "./components/UserRoute";
+import ContactPage from "./pages/ContactPage";
+import EcoDashboardPage from "./pages/EcoDashboardPage";
 
 function App() {
   return (
@@ -35,6 +37,15 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route
+          path="/eco"
+          element={
+            <UserRoute>
+              <EcoDashboardPage />
+            </UserRoute>
+          }
+        />
         <Route
           path="/"
           element={
@@ -44,7 +55,7 @@ function App() {
           }
         />
         <Route
-          path="/browse/:section"
+          path="/browse"
           element={
             <UserRoute>
               <BrowsePage />

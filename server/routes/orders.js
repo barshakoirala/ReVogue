@@ -9,6 +9,7 @@ router.use(authenticate);
 router.use(authorize(ROLES.USER));
 
 router.post("/checkout", orderController.checkout);
+router.get("/eco-stats", orderController.getMyEcoStats);
 router.get("/", orderController.getMyOrders);
 router.get("/:orderId", orderController.getMyOrderById);
 

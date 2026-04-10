@@ -8,140 +8,113 @@ import {
 
 export default function AdminBrands() {
   const [showForm, setShowForm] = useState(false);
-  const [editingBrand, setEditingBrand] = useState(null);
-  const [formName, setFormName] = useState("");
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [editing, setEditing] = useState(null);
+  const [name, setName] = useState("");
+  const [deleteId, setDeleteId] = useState(null);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
 
   const { data: brands = [], isLoading } = useGetBrandsQuery();
-  const [createBrand, { isLoading: isCreating }] = useCreateBrandMutation();
-  const [updateBrand, { isLoading: isUpdating }] = useUpdateBrandMutation();
+  const [createBrand, { isLoading: creating }] = useCreateBrandMutation();
+  const [updateBrand, { isLoading: updating }] = useUpdateBrandMutation();
   const [deleteBrand] = useDeleteBrandMutation();
 
-  const resetForm = () => {
-    setFormName("");
-    setEditingBrand(null);
-    setShowForm(false);
-    setError("");
-  };
+  const reset = () => { setName(""); setEditing(null); setShowForm(false); setError(""); };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    const name = formName.trim();
-    if (!name) return;
+    if (!name.trim()) return;
     try {
-      if (editingBrand) {
-        await updateBrand({ id: editingBrand._id, name }).unwrap();
-      } else {
-        await createBrand({ name }).unwrap();
-      }
-      resetForm();
-    } catch (err) {
-      setError(err?.data?.message || "Failed to save");
-    }
+      if (editing) await updateBrand({ id: editing._id, name: name.trim() }).unwrap();
+      else await createBrand({ name: name.trim() }).unwrap();
+      reset();
+    } catch (err) { setError(err?.data?.message || "Failed to save"); }
   };
 
-  const handleEdit = (brand) => {
-    setEditingBrand(brand);
-    setFormName(brand.name);
-    setShowForm(true);
+  const handleDelete = async () => {
+    try { await deleteBrand(deleteId).unwrap(); setDeleteId(null); }
+    catch (err) { setError(err?.data?.message || "Failed to delete"); }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteBrand(id).unwrap();
-      setDeleteConfirm(null);
-    } catch (err) {
-      setError(err?.data?.message || "Failed to delete");
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900 mb-4">Brands</h1>
-        <p className="text-gray-500">Loading...</p>
-      </div>
-    );
-  }
+  const filtered = brands.filter((b) => !search || b.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold text-gray-900">Brands</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Brands</h1>
+          <p className="text-sm text-gray-500">{brands.length} brands</p>
+        </div>
         {!showForm && (
-          <button
-            onClick={() => {
-              resetForm();
-              setShowForm(true);
-            }}
-            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-          >
-            Add Brand
+          <button onClick={() => { reset(); setShowForm(true); }} className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700">
+            + Add Brand
           </button>
         )}
       </div>
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md text-sm">{error}</div>
-      )}
+      {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">{error}</div>}
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg border border-gray-200 p-6 mb-6 flex gap-4 items-end">
-          <div className="flex-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-            <input
-              type="text"
-              value={formName}
-              onChange={(e) => setFormName(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 p-5 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">{editing ? "Edit Brand" : "New Brand"}</h3>
+          <div className="flex gap-3 items-end">
+            <div className="flex-1">
+              <label className="block text-xs font-medium text-gray-600 mb-1">Brand name *</label>
+              <input
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="e.g. Gucci"
+              />
+            </div>
+            <button type="submit" disabled={creating || updating} className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 disabled:opacity-50">
+              {creating || updating ? "Saving..." : editing ? "Update" : "Create"}
+            </button>
+            <button type="button" onClick={reset} className="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">Cancel</button>
           </div>
-          <button
-            type="submit"
-            disabled={isCreating || isUpdating}
-            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
-          >
-            {isCreating || isUpdating ? "Saving..." : editingBrand ? "Update" : "Create"}
-          </button>
-          <button type="button" onClick={resetForm} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">
-            Cancel
-          </button>
         </form>
       )}
 
-      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {brands.map((brand) => (
-              <tr key={brand._id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-900">{brand.name}</td>
-                <td className="px-4 py-3 text-right">
-                  <button onClick={() => handleEdit(brand)} className="text-sm text-gray-600 hover:text-gray-900 mr-3">Edit</button>
-                  <button onClick={() => setDeleteConfirm(brand._id)} className="text-sm text-red-600 hover:text-red-800">Delete</button>
-                </td>
-              </tr>
+      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="p-4 border-b border-gray-100">
+          <input
+            type="text"
+            placeholder="Search brands..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full sm:w-64 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+        {isLoading ? (
+          <div className="p-8 text-center text-gray-400 text-sm">Loading...</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 divide-y sm:divide-y-0 sm:gap-px sm:bg-gray-100">
+            {filtered.map((brand) => (
+              <div key={brand._id} className="bg-white px-5 py-3.5 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <span className="text-sm font-medium text-gray-900">{brand.name}</span>
+                <div className="flex gap-3">
+                  <button onClick={() => { setEditing(brand); setName(brand.name); setShowForm(true); }} className="text-xs text-gray-500 hover:text-purple-700 font-medium">Edit</button>
+                  <button onClick={() => setDeleteId(brand._id)} className="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-        {brands.length === 0 && <p className="p-6 text-center text-gray-500">No brands yet.</p>}
+          </div>
+        )}
+        {!isLoading && filtered.length === 0 && (
+          <p className="p-8 text-center text-gray-400 text-sm">No brands found.</p>
+        )}
       </div>
 
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/30 z-40 flex items-center justify-center p-4" onClick={() => setDeleteConfirm(null)}>
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <p className="text-gray-700 mb-4">Are you sure you want to delete this brand?</p>
+      {deleteId && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setDeleteId(null)}>
+          <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-base font-semibold text-gray-900 mb-2">Delete brand?</h3>
+            <p className="text-sm text-gray-500 mb-5">This cannot be undone.</p>
             <div className="flex justify-end gap-2">
-              <button onClick={() => setDeleteConfirm(null)} className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50">Cancel</button>
-              <button onClick={() => handleDelete(deleteConfirm)} className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+              <button onClick={() => setDeleteId(null)} className="px-4 py-2 border border-gray-200 text-sm rounded-lg hover:bg-gray-50">Cancel</button>
+              <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700">Delete</button>
             </div>
           </div>
         </div>

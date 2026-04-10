@@ -419,7 +419,7 @@ export default function VirtualWardrobePage() {
                     ) : null}
                     {suggestions.length === 0 && (
                       <Link
-                        to="/browse/all"
+                        to="/browse"
                         className={`inline-flex justify-center w-full px-5 py-3.5 rounded-xl ${CLASSES.primaryButton} text-sm font-semibold shadow-sm hover:shadow transition-shadow`}
                         onClick={clearSelection}
                       >

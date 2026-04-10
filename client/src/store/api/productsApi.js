@@ -18,13 +18,14 @@ export const productsApi = createApi({
     getProductsPaginated: builder.query({
       query: ({ tier, section, page = 1, limit = 12, search } = {}) => {
         const params = new URLSearchParams();
-        if (tier) params.set("tier", tier);
-        if (section) params.set("section", section);
+        if (tier && tier !== "all" && tier !== "null") params.set("tier", tier);
+        if (section && section !== "all" && section !== "null") params.set("section", section);
         if (search) params.set("search", search);
         params.set("page", page);
         params.set("limit", limit);
         return `/products?${params}`;
       },
+      transformResponse: (res) => res,
     }),
     getGoesWith: builder.query({
       query: ({ productIds, limit = 8 } = {}) => {

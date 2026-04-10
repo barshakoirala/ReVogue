@@ -63,3 +63,92 @@ export async function getMyOrders(userId) {
     .lean();
   return orders;
 }
+
+export async function getMyEcoStats(userId) {
+  const orders = await Order.find({ buyer: userId, paymentStatus: "paid" })
+    .populate({
+      path: "items.product",
+      select: "title images ecoSustainability ecoScore tier brand",
+      populate: { path: "brand", select: "name" },
+    })
+    .lean();
+
+  const totals = {
+    carbonSavedKg: 0,
+    waterSavedLiters: 0,
+    wasteDivertedKg: 0,
+    energySavedKwh: 0,
+    microplasticsAvoidedG: 0,
+    recycledContentPercent: 0,
+    recycledCount: 0,
+    itemsBought: 0,
+    ordersCount: orders.length,
+    avgEcoScore: 0,
+    ecoScoreCount: 0,
+  };
+
+  const topItems = [];
+
+  for (const order of orders) {
+    for (const item of order.items) {
+      const p = item.product;
+      if (!p) continue;
+      const qty = item.quantity || 1;
+      totals.itemsBought += qty;
+
+      const eco = p.ecoSustainability;
+      if (eco) {
+        if (eco.carbonSavedKg != null) totals.carbonSavedKg += eco.carbonSavedKg * qty;
+        if (eco.waterSavedLiters != null) totals.waterSavedLiters += eco.waterSavedLiters * qty;
+        if (eco.wasteDivertedKg != null) totals.wasteDivertedKg += eco.wasteDivertedKg * qty;
+        if (eco.energySavedKwh != null) totals.energySavedKwh += eco.energySavedKwh * qty;
+        if (eco.microplasticsAvoidedG != null) totals.microplasticsAvoidedG += eco.microplasticsAvoidedG * qty;
+        if (eco.recycledContentPercent != null) {
+          totals.recycledContentPercent += eco.recycledContentPercent;
+          totals.recycledCount++;
+        }
+      }
+      if (p.ecoScore != null) {
+        totals.avgEcoScore += p.ecoScore;
+        totals.ecoScoreCount++;
+      }
+      if (p.ecoScore != null && p.ecoScore > 0) {
+        topItems.push({
+          title: p.title,
+          image: p.images?.[0] || null,
+          brand: p.brand?.name || null,
+          ecoScore: p.ecoScore,
+          carbonSavedKg: p.ecoSustainability?.carbonSavedKg || 0,
+        });
+      }
+    }
+  }
+
+  if (totals.ecoScoreCount > 0) {
+    totals.avgEcoScore = Math.round((totals.avgEcoScore / totals.ecoScoreCount) * 100) / 100;
+  }
+  if (totals.recycledCount > 0) {
+    totals.recycledContentPercent = Math.round(totals.recycledContentPercent / totals.recycledCount);
+  }
+
+  // Round all numbers
+  totals.carbonSavedKg = Math.round(totals.carbonSavedKg * 10) / 10;
+  totals.waterSavedLiters = Math.round(totals.waterSavedLiters);
+  totals.wasteDivertedKg = Math.round(totals.wasteDivertedKg * 10) / 10;
+  totals.energySavedKwh = Math.round(totals.energySavedKwh * 10) / 10;
+  totals.microplasticsAvoidedG = Math.round(totals.microplasticsAvoidedG * 10) / 10;
+
+  // Top 3 eco items
+  topItems.sort((a, b) => b.ecoScore - a.ecoScore);
+  const topEcoItems = topItems.slice(0, 3);
+
+  // Eco level based on carbon saved
+  let ecoLevel = "Newcomer";
+  let ecoLevelNext = 5;
+  if (totals.carbonSavedKg >= 100) { ecoLevel = "Eco Champion"; ecoLevelNext = null; }
+  else if (totals.carbonSavedKg >= 50) { ecoLevel = "Green Hero"; ecoLevelNext = 100; }
+  else if (totals.carbonSavedKg >= 20) { ecoLevel = "Eco Warrior"; ecoLevelNext = 50; }
+  else if (totals.carbonSavedKg >= 5) { ecoLevel = "Conscious Buyer"; ecoLevelNext = 20; }
+
+  return { totals, topEcoItems, ecoLevel, ecoLevelNext };
+}

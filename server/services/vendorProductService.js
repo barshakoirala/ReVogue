@@ -172,3 +172,29 @@ export async function deleteProduct(productId, sellerId) {
   });
   return result.deletedCount === 1;
 }
+
+// Admin versions — no seller restriction
+export async function updateProductAdmin(productId, data) {
+  const payload = {};
+  for (const key of UPDATABLE_FIELDS) {
+    if (data[key] !== undefined) {
+      if (key === "tier") {
+        payload[key] = data[key] === TIER_LUXURY ? TIER_LUXURY : TIER_NORMAL;
+      } else if (key === "trending") {
+        payload[key] = data[key] === true || data[key] === "true";
+      } else if (key === "ecoSustainability") {
+        payload[key] = buildEcoPayload(data[key]) ?? undefined;
+        payload.ecoScore = payload[key] ? computeEcoScore(payload[key]) : undefined;
+      } else {
+        payload[key] = data[key];
+      }
+    }
+  }
+  const product = await Product.findByIdAndUpdate(productId, payload, { new: true, runValidators: true });
+  return product?.toObject() || null;
+}
+
+export async function deleteProductAdmin(productId) {
+  const result = await Product.deleteOne({ _id: productId });
+  return result.deletedCount === 1;
+}

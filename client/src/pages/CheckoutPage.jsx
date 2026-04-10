@@ -85,7 +85,7 @@ export default function CheckoutPage() {
         <UserHeader showBack />
         <main className="max-w-6xl mx-auto px-4 py-16 text-center">
           <p className="text-stone-600 mb-4">Your cart is empty</p>
-          <Link to="/browse/all" className={`${CLASSES.accentLink} font-medium`}>
+          <Link to="/browse" className={`${CLASSES.accentLink} font-medium`}>
             Continue shopping
           </Link>
         </main>

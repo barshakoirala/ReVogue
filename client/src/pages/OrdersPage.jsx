@@ -77,7 +77,7 @@ export default function OrdersPage() {
           <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
             <p className="text-stone-600 mb-4">You haven&apos;t placed any orders yet</p>
             <Link
-              to="/browse/all"
+              to="/browse"
               className={`inline-block px-6 py-2 ${CLASSES.primaryButtonDark} text-sm font-medium`}
             >
               Start shopping

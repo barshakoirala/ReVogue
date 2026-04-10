@@ -39,7 +39,11 @@ export const orderApi = createApi({
           ? [...result.map(({ _id }) => ({ type: "Orders", id: _id })), { type: "Orders", id: "LIST" }]
           : [{ type: "Orders", id: "LIST" }],
     }),
+    getMyEcoStats: builder.query({
+      query: () => "/orders/eco-stats",
+      providesTags: [{ type: "Orders", id: "ECO" }],
+    }),
   }),
 });
 
-export const { useCheckoutMutation, useGetOrderByIdQuery, useGetMyOrdersQuery } = orderApi;
+export const { useCheckoutMutation, useGetOrderByIdQuery, useGetMyOrdersQuery, useGetMyEcoStatsQuery } = orderApi;

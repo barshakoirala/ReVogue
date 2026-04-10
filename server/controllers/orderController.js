@@ -35,3 +35,12 @@ export async function getMyOrders(req, res, next) {
     next(err);
   }
 }
+
+export async function getMyEcoStats(req, res, next) {
+  try {
+    const stats = await orderService.getMyEcoStats(req.user._id);
+    res.json(stats);
+  } catch (err) {
+    next(err);
+  }
+}

@@ -59,7 +59,7 @@ export default function CartPage() {
           <div className="bg-white rounded-xl border border-stone-200 p-12 text-center">
             <p className="text-stone-600 mb-4">Your cart is empty</p>
             <Link
-              to="/browse/all"
+              to="/browse"
               className={`inline-block px-6 py-2 ${CLASSES.primaryButtonDark} text-sm font-medium transition-colors`}
             >
               Continue shopping

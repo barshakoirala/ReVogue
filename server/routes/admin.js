@@ -12,6 +12,9 @@ router.use(authenticate);
 router.use(authorize(ROLES.ADMIN));
 
 router.get("/products", adminProductController.getAllProducts);
+router.post("/products", adminProductController.createProduct);
+router.put("/products/:id", adminProductController.updateProduct);
+router.delete("/products/:id", adminProductController.deleteProduct);
 router.get("/categories", adminCategoryController.getCategories);
 router.post("/categories", adminCategoryController.createCategory);
 router.get("/categories/:id", adminCategoryController.getCategory);

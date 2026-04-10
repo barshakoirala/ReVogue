@@ -35,6 +35,18 @@ export const adminApi = createApi({
           ? [...result.map(({ _id }) => ({ type: "AdminProducts", id: _id })), { type: "AdminProducts", id: "LIST" }]
           : [{ type: "AdminProducts", id: "LIST" }],
     }),
+    createProduct: builder.mutation({
+      query: (body) => ({ url: "/admin/products", method: "POST", body }),
+      invalidatesTags: [{ type: "AdminProducts", id: "LIST" }],
+    }),
+    updateProduct: builder.mutation({
+      query: ({ id, ...body }) => ({ url: `/admin/products/${id}`, method: "PUT", body }),
+      invalidatesTags: (_, __, { id }) => [{ type: "AdminProducts", id }, { type: "AdminProducts", id: "LIST" }],
+    }),
+    deleteProduct: builder.mutation({
+      query: (id) => ({ url: `/admin/products/${id}`, method: "DELETE" }),
+      invalidatesTags: (_, __, id) => [{ type: "AdminProducts", id }, { type: "AdminProducts", id: "LIST" }],
+    }),
     getCategories: builder.query({
       query: () => "/admin/categories",
       transformResponse: (res) => res.categories,
@@ -103,6 +115,9 @@ export const adminApi = createApi({
 
 export const {
   useGetProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetCategoriesQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,

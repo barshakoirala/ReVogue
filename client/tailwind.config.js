@@ -10,8 +10,8 @@ export default {
         "revogue-gold": COLORS.GOLD,
       },
       fontFamily: {
-        "revogue-serif": [FONTS.SERIF, "Didot", "Georgia", "serif"],
-        "revogue-script": [FONTS.SCRIPT, "Georgia", "serif"],
+        "revogue-serif": [FONTS.SERIF, "Georgia", "serif"],
+        "revogue-script": [FONTS.SCRIPT, "system-ui", "sans-serif"],
       },
     },
   },

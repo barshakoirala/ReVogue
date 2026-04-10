@@ -11,50 +11,41 @@ const TIER_OPTIONS = [
 ];
 
 const SECTIONS = [
-  { id: "all", label: "All" },
-  { id: "trending", label: "Trending" },
-  { id: "new", label: "New" },
-  { id: "others", label: "Others" },
+  { id: "trending", label: "Trending Now" },
+  { id: "new", label: "New Arrivals" },
+  { id: "others", label: "The Edit" },
 ];
 
-const CARD_WIDTH = 160;
-const CARD_HEIGHT = 276;
-const CARD_GAP = 16;
-const SCROLL_AMOUNT = CARD_WIDTH + CARD_GAP;
+const SCROLL_AMOUNT = 176;
 
 function ProductCard({ product }) {
-  const imageUrl = product.images?.[0] || "https://picsum.photos/400/400?random=1";
+  const imageUrl = product.images?.[0] || `https://picsum.photos/seed/${product._id}/400/500`;
   const brandName = product.brand?.name;
-  const tierLabel = product.tier === "luxury" ? "Luxury" : null;
 
   return (
     <Link
       to={`/products/${product._id}`}
-      className="group block flex-shrink-0 bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow border border-stone-100 flex flex-col"
-      style={{ width: CARD_WIDTH, height: CARD_HEIGHT }}
+      className="group flex-shrink-0 block"
+      style={{ width: 160 }}
     >
-      <div className="w-full h-40 bg-stone-100 relative overflow-hidden flex-shrink-0">
+      <div className="w-full aspect-[3/4] bg-stone-100 overflow-hidden mb-3 relative">
         <img
           src={imageUrl}
           alt={product.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
-        {tierLabel && (
-          <span className={`absolute top-2 right-2 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${CLASSES.luxuryBadge} rounded`}>
-            {tierLabel}
+        {product.tier === "luxury" && (
+          <span className="absolute top-2 left-2 text-[9px] uppercase tracking-[0.2em] bg-white/90 text-stone-800 px-2 py-0.5">
+            Luxury
           </span>
         )}
       </div>
-      <div className="flex flex-col flex-1 min-h-0 p-3">
-        <p className="text-xs text-stone-500 uppercase tracking-wider mb-0.5 min-h-[1rem] line-clamp-1">
-          {brandName || "\u00A0"}
-        </p>
-        <h3 className={`font-medium text-stone-900 line-clamp-2 ${CLASSES.cardHover} flex-1 min-h-0`}>
-          {product.title}
-        </h3>
-        <p className="text-sm text-stone-600 mt-1 flex-shrink-0">
-          NPR {product.price?.toLocaleString()}
-        </p>
+      <div className="space-y-0.5">
+        {brandName && (
+          <p className="text-[10px] uppercase tracking-[0.18em] text-stone-400">{brandName}</p>
+        )}
+        <p className="text-xs text-stone-800 line-clamp-1 tracking-wide">{product.title}</p>
+        <p className="text-xs text-stone-500">NPR {product.price?.toLocaleString()}</p>
       </div>
     </Link>
   );
@@ -67,42 +58,22 @@ function ScrollArrow({ direction, onClick, disabled }) {
       onClick={onClick}
       disabled={disabled}
       aria-label={`Scroll ${direction}`}
-      className={`absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white/90 shadow-md border border-stone-200 flex items-center justify-center text-stone-600 hover:bg-white hover:text-stone-900 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white/90 transition-all ${direction === "left" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2"}`}
+      className={`absolute top-[40%] z-10 w-8 h-8 bg-white border border-stone-200 flex items-center justify-center text-stone-500 hover:text-stone-900 disabled:opacity-20 transition-all ${
+        direction === "left" ? "-left-4" : "-right-4"
+      }`}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        {direction === "left" ? (
-          <path d="M15 18l-6-6 6-6" />
-        ) : (
-          <path d="M9 18l6-6-6-6" />
-        )}
-      </svg>
+      {direction === "left" ? "←" : "→"}
     </button>
   );
 }
 
 function ProductSection({ title, tier, section, browseLink }) {
   const scrollRef = useRef(null);
-  const { data: products = [], isLoading, error } = useGetProductsQuery({
+  const { data: products = [], isLoading } = useGetProductsQuery({
     tier: tier === "all" ? undefined : tier,
     section,
     limit: 10,
   });
-
-  const scroll = (dir) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    el.scrollBy({ left: dir === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT, behavior: "smooth" });
-  };
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -123,80 +94,44 @@ function ProductSection({ title, tier, section, browseLink }) {
     return () => ro.disconnect();
   }, [products]);
 
-  if (isLoading) {
-    return (
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
-        </div>
-        <div className="flex gap-4 overflow-x-hidden">
-          {[...Array(5)].map((_, i) => (
-            <div
-              key={i}
-              className="flex-shrink-0 w-[160px] h-[276px] bg-stone-200 animate-pulse rounded-xl"
-            />
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
-        </div>
-        <p className="text-stone-500 text-sm">Unable to load products.</p>
-      </section>
-    );
-  }
-
-  if (products.length === 0) {
-    return (
-      <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className={`${CLASSES.heading} text-sm font-medium text-stone-900 uppercase tracking-widest`}>{title}</h2>
-        </div>
-        <p className="text-stone-500 text-sm">No products in this section.</p>
-      </section>
-    );
-  }
+  const scroll = (dir) => {
+    scrollRef.current?.scrollBy({ left: dir === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT, behavior: "smooth" });
+  };
 
   return (
     <section>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-medium text-stone-900 uppercase tracking-widest">{title}</h2>
-        <Link
-          to={browseLink}
-          className={`text-xs text-stone-500 uppercase tracking-wider ${CLASSES.linkHover}`}
-        >
-          View all
+      <div className="flex items-baseline justify-between mb-6 border-b border-stone-100 pb-3">
+        <h2 className={`${CLASSES.heading} text-xs uppercase tracking-[0.25em] text-stone-900`}>{title}</h2>
+        <Link to={browseLink} className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">
+          View All
         </Link>
       </div>
-      <div className="relative">
-        <div
-          ref={scrollRef}
-          onScroll={checkScroll}
-          className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4 sm:-mx-0 sm:px-0 snap-x snap-mandatory"
-        >
-          {products.map((product) => (
-            <div key={product._id} className="snap-start flex-shrink-0">
-              <ProductCard product={product} />
-            </div>
+
+      {isLoading ? (
+        <div className="flex gap-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex-shrink-0 w-40 h-64 bg-stone-100 animate-pulse" />
           ))}
         </div>
-        <ScrollArrow
-          direction="left"
-          onClick={() => scroll("left")}
-          disabled={!canScrollLeft}
-        />
-        <ScrollArrow
-          direction="right"
-          onClick={() => scroll("right")}
-          disabled={!canScrollRight}
-        />
-      </div>
+      ) : products.length === 0 ? (
+        <p className="text-xs text-stone-400 tracking-wide py-8">No products available.</p>
+      ) : (
+        <div className="relative">
+          <div
+            ref={scrollRef}
+            onScroll={checkScroll}
+            className="flex gap-4 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+          >
+            {products.map((p) => (
+              <div key={p._id} className="snap-start">
+                <ProductCard product={p} />
+              </div>
+            ))}
+          </div>
+          <ScrollArrow direction="left" onClick={() => scroll("left")} disabled={!canScrollLeft} />
+          <ScrollArrow direction="right" onClick={() => scroll("right")} disabled={!canScrollRight} />
+        </div>
+      )}
     </section>
   );
 }
@@ -205,17 +140,15 @@ export default function HomePage() {
   const [tierFilter, setTierFilter] = useState("all");
 
   const tierFilterEl = (
-    <div
-      role="group"
-      aria-label="Filter by tier"
-      className="flex p-0.5 bg-stone-200/80 rounded-lg"
-    >
+    <div className="flex gap-6">
       {TIER_OPTIONS.map((opt) => (
         <button
           key={opt.id}
           onClick={() => setTierFilter(opt.id)}
-          className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-            tierFilter === opt.id ? CLASSES.tierActive : CLASSES.tierInactive
+          className={`text-[11px] uppercase tracking-[0.2em] transition-colors pb-0.5 ${
+            tierFilter === opt.id
+              ? "text-stone-900 border-b border-stone-900"
+              : "text-stone-400 hover:text-stone-700"
           }`}
         >
           {opt.label}
@@ -225,109 +158,119 @@ export default function HomePage() {
   );
 
   return (
-    <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
+    <div className={`${CLASSES.userWrapper} min-h-screen bg-white`}>
       <UserHeader centerContent={tierFilterEl} />
 
-      <main>
+      <main className="max-w-6xl mx-auto px-4 sm:px-6">
+
+        {/* Hero — full-width editorial image */}
         {tierFilter === "all" && (
           <>
-            <section className="relative h-[480px] -mx-4 sm:mx-0 sm:rounded-xl overflow-hidden bg-gradient-to-br from-[#4a1456] via-[#6A1B7A] to-stone-900">
-              <div
-                className="absolute inset-0 bg-cover bg-center opacity-40"
-                style={{
-                  backgroundImage: "url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80)",
-                }}
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.3em] mb-3`}>Pre-loved luxury, reimagined</p>
-                <h1 className={`${CLASSES.heading} text-3xl sm:text-4xl lg:text-5xl font-light text-white tracking-tight max-w-2xl`}>
-                  Sustainable second-hand fashion
-                </h1>
-                <p className="text-stone-300 text-sm sm:text-base mt-4 max-w-md">
-                  Curated pieces from coveted brands. Luxury and everyday.
-                </p>
-                <Link
-                  to="/browse"
-                  className="mt-8 px-8 py-3 border border-revogue-gold/60 text-revogue-gold text-sm font-medium tracking-wider uppercase hover:bg-revogue-gold/20 transition-colors"
-                >
-                  Shop Now
-                </Link>
+            <section className="mt-6 mb-16">
+              <div className="relative w-full h-[70vh] min-h-[480px] overflow-hidden bg-stone-100">
+                <img
+                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=90"
+                  alt="ReVogue"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                  <p className="text-[10px] uppercase tracking-[0.4em] text-white/70 mb-4">Pre-loved luxury, reimagined</p>
+                  <h1 className={`${CLASSES.heading} text-4xl sm:text-5xl lg:text-6xl font-light text-white tracking-[0.08em] max-w-3xl leading-tight`}>
+                    Sustainable<br />Second-Hand Fashion
+                  </h1>
+                  <Link
+                    to="/browse"
+                    className="mt-10 px-10 py-3 border border-white/70 text-white text-[11px] uppercase tracking-[0.3em] hover:bg-white hover:text-stone-900 transition-all duration-300"
+                  >
+                    Discover
+                  </Link>
+                </div>
               </div>
             </section>
 
-            <section className="max-w-6xl mx-auto px-4 mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Link
-                to="/browse?tab=luxury"
-                className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
-              >
+            {/* Two editorial banners */}
+            <section className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-20">
+              <Link to="/browse?tab=luxury" className="group relative overflow-hidden bg-stone-100 aspect-[4/5]">
                 <img
-                  src="https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=85"
                   alt="Luxury"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-stone-900/40" />
-                <div className="absolute inset-0 flex flex-col justify-end p-6">
-                  <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Resale</p>
-                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Luxury</h2>
-                  <p className="text-stone-300 text-sm mt-1">Designer pieces at a fraction</p>
+                <div className="absolute inset-0 bg-black/25" />
+                <div className="absolute bottom-0 left-0 p-8">
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/60 mb-2">Collection</p>
+                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-[0.1em] uppercase`}>Luxury</h2>
+                  <p className="text-[11px] text-white/70 mt-1 tracking-wide">Designer pieces, pre-loved</p>
                 </div>
               </Link>
-              <Link
-                to="/browse?tab=normal"
-                className="group relative h-64 sm:h-80 rounded-xl overflow-hidden bg-stone-200"
-              >
+              <Link to="/browse?tab=normal" className="group relative overflow-hidden bg-stone-100 aspect-[4/5]">
                 <img
-                  src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&q=85"
                   alt="Everyday"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-stone-900/30" />
-                <div className="absolute inset-0 flex flex-col justify-end p-6">
-                  <p className={`${CLASSES.goldAccentMuted} text-xs uppercase tracking-[0.2em] mb-1`}>Curated</p>
-                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-tight`}>Everyday</h2>
-                  <p className="text-stone-300 text-sm mt-1">Quality staples, gently worn</p>
+                <div className="absolute inset-0 bg-black/20" />
+                <div className="absolute bottom-0 left-0 p-8">
+                  <p className="text-[9px] uppercase tracking-[0.3em] text-white/60 mb-2">Curated</p>
+                  <h2 className={`${CLASSES.heading} text-2xl font-light text-white tracking-[0.1em] uppercase`}>Everyday</h2>
+                  <p className="text-[11px] text-white/70 mt-1 tracking-wide">Quality staples, gently worn</p>
                 </div>
               </Link>
             </section>
 
-            <section className="max-w-6xl mx-auto px-4 mt-16 py-12 border-y border-stone-200">
-              <p className={`${CLASSES.heading} text-center text-stone-500 text-xs uppercase tracking-[0.25em]`}>
-                Shop the edit
-              </p>
-            </section>
+            {/* Divider */}
+            <div className="flex items-center gap-6 mb-16">
+              <div className="flex-1 h-px bg-stone-100" />
+              <p className={`${CLASSES.heading} text-[10px] uppercase tracking-[0.35em] text-stone-400`}>The Edit</p>
+              <div className="flex-1 h-px bg-stone-100" />
+            </div>
           </>
         )}
 
-        <div className="max-w-6xl mx-auto px-4 py-12 space-y-16">
+        {/* Product sections */}
+        <div className="space-y-16 pb-20">
           {SECTIONS.map((sec, idx) => (
             <div key={sec.id}>
               <ProductSection
                 title={sec.label}
                 tier={tierFilter}
                 section={sec.id}
-                browseLink={`/browse?tab=all`}
+                browseLink="/browse?tab=all"
               />
-              {idx === 1 && (
-                <div className="mt-16">
-                  <div
-                    className="h-48 sm:h-64 rounded-xl overflow-hidden -mx-4 sm:mx-0 bg-stone-200 relative"
-                    style={{
-                      backgroundImage: "url(https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1200&q=80)",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-stone-900/40 flex items-center justify-center">
-                      <p className={`${CLASSES.goldAccentMuted} text-xs sm:text-sm uppercase tracking-[0.3em]`}>
-                        Fashion that lasts
-                      </p>
-                    </div>
+              {/* Mid-page editorial strip */}
+              {idx === 1 && tierFilter === "all" && (
+                <div className="mt-16 relative h-40 overflow-hidden bg-stone-900">
+                  <img
+                    src="https://images.unsplash.com/photo-1558171813-4c088753af8f?w=1400&q=80"
+                    alt=""
+                    className="w-full h-full object-cover opacity-40"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className={`${CLASSES.heading} text-[11px] uppercase tracking-[0.5em] text-white/80`}>
+                      Fashion That Lasts
+                    </p>
                   </div>
                 </div>
               )}
             </div>
           ))}
         </div>
+
+        {/* Footer strip */}
+        <div className="border-t border-stone-100 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <p className={`${CLASSES.heading} text-xs uppercase tracking-[0.3em] text-stone-900 mb-1`}>ReVogue</p>
+            <p className="text-[11px] text-stone-400 tracking-wide">Sustainable second-hand fashion</p>
+          </div>
+          <div className="flex gap-8">
+            <Link to="/browse" className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">Shop</Link>
+            <Link to="/donations" className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">Donate</Link>
+            <Link to="/eco" className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">Eco Impact</Link>
+            <Link to="/contact" className="text-[10px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">Contact</Link>
+          </div>
+        </div>
+
       </main>
     </div>
   );

@@ -19,8 +19,8 @@ export const COLORS = {
 
 // ─── FONTS ──────────────────────────────────────────────────────────────────
 export const FONTS = {
-  SERIF: '"Bodoni Moda"',      // VOGUE-style headings
-  SCRIPT: '"Cormorant Garamond"', // Re-style, body text
+  SERIF: '"Tenor Sans"',   // headings — ultra-clean luxury, Cartier-like
+  SCRIPT: '"Raleway"',     // body — light, airy, refined
 };
 
 // Google Fonts URL (used in index.html)

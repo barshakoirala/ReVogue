@@ -6,19 +6,32 @@
 :root {
   --revogue-purple: #6a1b7a;
   --revogue-gold: #b88a2a;
-  --font-revogue-serif: "Bodoni Moda", Didot, Georgia, serif;
-  --font-revogue-script: "Cormorant Garamond", Georgia, serif;
+  --font-revogue-serif: "Tenor Sans", Georgia, serif;
+  --font-revogue-script: "Raleway", system-ui, sans-serif;
 }
 
-/* User-facing typography – .revogue-user enables brand styling */
 .revogue-user {
   font-family: var(--font-revogue-script);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.03em;
 }
 .revogue-user h1,
 .revogue-user h2,
 .revogue-user h3,
 .revogue-user .font-revogue-serif {
   font-family: var(--font-revogue-serif);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body {
+  font-family: "Raleway", system-ui, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.03em;
 }
 
 .scrollbar-hide {

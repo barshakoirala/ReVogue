@@ -42,9 +42,14 @@ export default function RegisterPage() {
           <span className="text-sm text-stone-500 group-hover:text-stone-700 transition-colors">←</span>
           <span className={`${CLASSES.accentLink} text-sm font-medium`}>Back to home</span>
         </Link>
-        <Link to="/" className={`${CLASSES.heading} text-xl font-semibold tracking-wide text-stone-900`}>
-          Re<span className="text-revogue-gold">VOGUE</span>
-        </Link>
+        <Link to="/" className="block flex-shrink-0">
+            <span
+              style={{ fontFamily: "'Tenor Sans', sans-serif", letterSpacing: "0.22em" }}
+              className="text-[15px] uppercase text-stone-900 tracking-[0.22em] font-normal"
+            >
+              Re<span style={{ letterSpacing: "0.28em" }}>VOGUE</span>
+            </span>
+          </Link>
         <div className="w-24" />
       </div>
 

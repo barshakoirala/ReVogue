@@ -1,7 +1,7 @@
 import { useSearchParams, Link } from "react-router-dom";
 import UserHeader from "../components/UserHeader";
 import { CLASSES } from "../constants/theme";
-import { useGetProductsPaginatedQuery, useGetCategoriesQuery } from "../store/api/productsApi";
+import { useGetProductsPaginatedQuery } from "../store/api/productsApi";
 
 const TABS = [
   { id: "all",    label: "All",    tier: null, section: null },
@@ -11,12 +11,44 @@ const TABS = [
 
 const PAGE_SIZE = 12;
 
+// Category-aware image fallback
+const FALLBACK = {
+  bags:      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+  jewelry:   "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=600&q=80",
+  watches:   "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=600&q=80",
+  sneakers:  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80",
+  boots:     "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&q=80",
+  formal:    "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
+  sandals:   "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=600&q=80",
+  dresses:   "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=600&q=80",
+  tops:      "https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&q=80",
+  bottoms:   "https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&q=80",
+  outerwear: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=600&q=80",
+  scarves:   "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=600&q=80",
+};
+
+function getImage(product) {
+  if (product.images?.[0]) return product.images[0];
+  const sub = (product.subcategory?.name || "").toLowerCase();
+  if (sub === "bags") return FALLBACK.bags;
+  if (sub === "jewelry") return FALLBACK.jewelry;
+  if (sub === "sneakers") return FALLBACK.sneakers;
+  if (sub === "boots") return FALLBACK.boots;
+  if (sub === "formal") return FALLBACK.formal;
+  if (sub === "sandals") return FALLBACK.sandals;
+  if (sub === "dresses") return FALLBACK.dresses;
+  if (sub === "tops") return FALLBACK.tops;
+  if (sub === "bottoms") return FALLBACK.bottoms;
+  if (sub === "outerwear") return FALLBACK.outerwear;
+  if (sub === "scarves") return FALLBACK.scarves;
+  return `https://picsum.photos/seed/${product._id}/400/500`;
+}
+
 function ProductCard({ product }) {
-  const imageUrl = product.images?.[0] || `https://picsum.photos/seed/${product._id}/400/500`;
+  const imageUrl = getImage(product);
 
   return (
     <Link to={`/products/${product._id}`} className="group block">
-      {/* Square image */}
       <div className="w-full aspect-square bg-stone-50 overflow-hidden mb-3 relative">
         <img
           src={imageUrl}
@@ -29,7 +61,6 @@ function ProductCard({ product }) {
           </span>
         )}
       </div>
-      {/* Text below image — centered, minimal */}
       <div className="text-center space-y-0.5 px-1">
         {product.brand?.name && (
           <p className="text-[9px] uppercase tracking-[0.22em] text-stone-400">{product.brand.name}</p>
@@ -86,8 +117,6 @@ export default function BrowsePage() {
       <UserHeader />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
-
-        {/* Page title */}
         <div className="text-center mb-10">
           <h1 className={`${CLASSES.heading} text-xs uppercase tracking-[0.35em] text-stone-900`}>
             {tab.id === "all" && "All Products"}
@@ -99,7 +128,7 @@ export default function BrowsePage() {
           )}
         </div>
 
-        {/* Category tabs — Cartier style */}
+        {/* Tabs */}
         <div className="flex justify-center gap-8 mb-10 border-b border-stone-100 pb-0">
           {TABS.map((t) => (
             <button
@@ -124,9 +153,6 @@ export default function BrowsePage() {
         ) : error ? (
           <div className="py-24 text-center">
             <p className="text-[11px] uppercase tracking-widest text-stone-400">Unable to load products</p>
-            <Link to="/" className="mt-4 inline-block text-[10px] uppercase tracking-[0.2em] text-stone-500 hover:text-stone-900 border-b border-stone-300">
-              Return Home
-            </Link>
           </div>
         ) : products.length === 0 ? (
           <div className="py-24 text-center">
@@ -138,7 +164,7 @@ export default function BrowsePage() {
           </div>
         )}
 
-        {/* Pagination — minimal */}
+        {/* Pagination */}
         {totalPages > 1 && (
           <div className="mt-16 flex justify-center items-center gap-1">
             <button
@@ -163,9 +189,7 @@ export default function BrowsePage() {
                     key={p}
                     onClick={() => setPage(p)}
                     className={`w-8 h-8 text-[11px] tracking-wide transition-colors ${
-                      page === p
-                        ? "bg-stone-900 text-white"
-                        : "text-stone-400 hover:text-stone-900"
+                      page === p ? "bg-stone-900 text-white" : "text-stone-400 hover:text-stone-900"
                     }`}
                   >
                     {p}
@@ -182,18 +206,13 @@ export default function BrowsePage() {
           </div>
         )}
 
-        {/* View all link */}
         {!isLoading && products.length > 0 && (
           <div className="mt-12 text-center">
-            <Link
-              to="/browse"
-              className="text-[10px] uppercase tracking-[0.3em] text-stone-500 border-b border-stone-300 pb-0.5 hover:text-stone-900 hover:border-stone-900 transition-colors"
-            >
+            <Link to="/browse" className="text-[10px] uppercase tracking-[0.3em] text-stone-500 border-b border-stone-300 pb-0.5 hover:text-stone-900 hover:border-stone-900 transition-colors">
               View All
             </Link>
           </div>
         )}
-
       </main>
     </div>
   );

@@ -260,7 +260,12 @@ export default function HomePage() {
         {/* Footer strip */}
         <div className="border-t border-stone-100 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
-            <p className={`${CLASSES.heading} text-xs uppercase tracking-[0.3em] text-stone-900 mb-1`}>ReVogue</p>
+            <p
+              style={{ fontFamily: "'Tenor Sans', sans-serif", letterSpacing: "0.25em" }}
+              className="text-[13px] uppercase text-stone-900 mb-1"
+            >
+              ReVogue
+            </p>
             <p className="text-[11px] text-stone-400 tracking-wide">Sustainable second-hand fashion</p>
           </div>
           <div className="flex gap-8">

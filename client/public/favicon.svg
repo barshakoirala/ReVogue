@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- White background -->
+  <rect width="100" height="100" fill="#FAFAF8"/>
+  <!-- Top gold line -->
+  <rect x="12" y="12" width="76" height="1.5" fill="#B88A2A"/>
+  <!-- Bottom gold line -->
+  <rect x="12" y="86.5" width="76" height="1.5" fill="#B88A2A"/>
+  <!-- Elegant R using paths -->
+  <g transform="translate(50,50)" fill="#111111">
+    <!-- Vertical stem -->
+    <rect x="-18" y="-28" width="5" height="56" fill="#111111"/>
+    <!-- Top bowl of R -->
+    <path d="M-13,-28 L2,-28 Q22,-28 22,-12 Q22,4 2,4 L-13,4 Z" fill="#111111"/>
+    <!-- Bowl cutout (white) -->
+    <path d="M-8,-23 L1,-23 Q16,-23 16,-12 Q16,-1 1,-1 L-8,-1 Z" fill="#FAFAF8"/>
+    <!-- Leg of R -->
+    <path d="M-1,4 L18,28 L12,28 L-7,4 Z" fill="#111111"/>
+  </g>
+  <!-- Small gold dot ornament top center -->
+  <circle cx="50" cy="8" r="2" fill="#B88A2A"/>
+  <!-- Small gold dot ornament bottom center -->
+  <circle cx="50" cy="92" r="2" fill="#B88A2A"/>
+</svg>

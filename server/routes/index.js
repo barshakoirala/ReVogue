@@ -10,6 +10,7 @@ import orderRoutes from "./orders.js";
 import paymentRoutes from "./payments.js";
 import donationRoutes from "./donations.js";
 import wardrobeRoutes from "./wardrobe.js";
+import conversationRoutes from "./conversations.js";
 import * as healthController from "../controllers/healthController.js";
 
 const router = Router();
@@ -25,6 +26,7 @@ router.use("/orders", orderRoutes);
 router.use("/payments", paymentRoutes);
 router.use("/donations", donationRoutes);
 router.use("/wardrobe", wardrobeRoutes);
+router.use("/conversations", conversationRoutes);
 router.get("/health", healthController.health);
 
 export default router;

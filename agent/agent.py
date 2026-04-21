@@ -36,7 +36,21 @@ You do not use emojis, asterisks, or complex formatting in your replies. Keep an
 server = AgentServer()
 
 
-@server.rtc_session(agent_name="revogue-chat")
+async def log_and_reply_text_input(
+    session: AgentSession, event: room_io.TextInputEvent
+) -> None:
+    logger.info(
+        "received user text | participant=%s | topic=%s | text=%r",
+        event.participant.identity,
+        event.info.topic,
+        event.text,
+    )
+    await session.interrupt()
+    handle = session.generate_reply(user_input=event.text, input_modality="text")
+    logger.info("dispatched generate_reply | handle_id=%s", getattr(handle, "id", None))
+
+
+@server.rtc_session()
 async def entrypoint(ctx: JobContext) -> None:
     session = AgentSession(
         llm=inference.LLM("openai/gpt-4.1-mini"),
@@ -45,10 +59,11 @@ async def entrypoint(ctx: JobContext) -> None:
         agent=ReVogueAssistant(),
         room=ctx.room,
         room_options=room_io.RoomOptions(
-            text_input=True,
+            text_input=room_io.TextInputOptions(text_input_cb=log_and_reply_text_input),
             text_output=True,
             audio_input=False,
             audio_output=False,
+            close_on_disconnect=False,
         ),
     )
     await session.generate_reply(

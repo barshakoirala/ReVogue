@@ -30,6 +30,8 @@ import VendorRoute from "./components/VendorRoute";
 import UserRoute from "./components/UserRoute";
 import ContactPage from "./pages/ContactPage";
 import EcoDashboardPage from "./pages/EcoDashboardPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import AssistantPage from "./pages/AssistantPage";
 
 function App() {
   return (
@@ -38,6 +40,22 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route
+          path="/assistant"
+          element={
+            <ProtectedRoute>
+              <AssistantPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/assistant/:conversationId"
+          element={
+            <ProtectedRoute>
+              <AssistantPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/eco"
           element={

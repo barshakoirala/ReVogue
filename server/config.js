@@ -59,4 +59,9 @@ export const config = {
     secretKey: resolveKhaltiSecretKey(),
     env: process.env.KHALTI_ENV === "production" ? "production" : "sandbox",
   },
+  /** LiveKit (voice/text rooms; tokens minted server-side only) */
+  livekitUrl: (process.env.LIVEKIT_URL || "").trim(),
+  livekitApiKey: (process.env.LIVEKIT_API_KEY || "").trim(),
+  livekitApiSecret: (process.env.LIVEKIT_API_SECRET || "").trim(),
+  livekitAgentName: (process.env.LIVEKIT_AGENT_NAME || "revogue-chat").trim(),
 };

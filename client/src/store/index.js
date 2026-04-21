@@ -10,6 +10,7 @@ import { orderApi } from "./api/orderApi";
 import { paymentApi } from "./api/paymentApi";
 import { donationApi } from "./api/donationApi";
 import { wardrobeApi } from "./api/wardrobeApi";
+import { agentChatApi } from "./api/agentChatApi";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     [paymentApi.reducerPath]: paymentApi.reducer,
     [donationApi.reducerPath]: donationApi.reducer,
     [wardrobeApi.reducerPath]: wardrobeApi.reducer,
+    [agentChatApi.reducerPath]: agentChatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -34,7 +36,8 @@ export const store = configureStore({
       orderApi.middleware,
       paymentApi.middleware,
       donationApi.middleware,
-      wardrobeApi.middleware
+      wardrobeApi.middleware,
+      agentChatApi.middleware
     ),
 });
 

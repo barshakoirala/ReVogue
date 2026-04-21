@@ -71,6 +71,9 @@ export default function UserHeader({ showBack = false, centerContent }) {
           {/* Right: utility links */}
           {isUser && (
             <div className="hidden sm:flex items-center gap-6">
+              <Link to="/assistant" className="text-[9px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">
+                Assistant
+              </Link>
               <Link to="/orders" className="text-[9px] uppercase tracking-[0.2em] text-stone-400 hover:text-stone-700 transition-colors">
                 My Orders
               </Link>
@@ -203,6 +206,7 @@ export default function UserHeader({ showBack = false, centerContent }) {
           {isUser && (
             <>
               <div className="h-px bg-stone-100" />
+              <Link to="/assistant" onClick={() => setMenuOpen(false)} className="block text-[10px] uppercase tracking-[0.2em] text-stone-400 py-1">Assistant</Link>
               <Link to="/orders" onClick={() => setMenuOpen(false)} className="block text-[10px] uppercase tracking-[0.2em] text-stone-400 py-1">My Orders</Link>
               <Link to="/payments" onClick={() => setMenuOpen(false)} className="block text-[10px] uppercase tracking-[0.2em] text-stone-400 py-1">Payments</Link>
               <Link to="/virtual-wardrobe" onClick={() => setMenuOpen(false)} className="block text-[10px] uppercase tracking-[0.2em] text-stone-400 py-1">Wardrobe</Link>

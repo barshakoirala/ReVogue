@@ -3,6 +3,7 @@ import "dotenv/config";
 import Category from "../models/Category.js";
 import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
+import { resolveProductImages } from "./utils/productImageResolver.js";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/revogue";
 
@@ -47,10 +48,11 @@ async function seedVendorProducts() {
     }
 
     let created = 0;
-    for (const p of PRODUCTS) {
+    for (const [idx, p] of PRODUCTS.entries()) {
       const cat = categoryMap[p.categoryName];
       if (!cat?.parent || !cat.subcategories[p.subcategoryName]) continue;
       const brandRef = p.brand ? brandMap[p.brand]?._id : null;
+      const images = await resolveProductImages(p, { index: idx });
       await Product.create({
         title: p.title,
         description: p.description,
@@ -62,7 +64,7 @@ async function seedVendorProducts() {
         brand: brandRef,
         tier: p.tier || "normal",
         trending: p.trending || false,
-        images: [`https://picsum.photos/400/400?random=${Math.floor(Math.random() * 1000)}`],
+        images,
         seller: vendorObjectId,
         status: "active",
       });

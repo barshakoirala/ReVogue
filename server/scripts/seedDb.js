@@ -6,6 +6,7 @@ import Brand from "../models/Brand.js";
 import Product from "../models/Product.js";
 import WardrobeItem from "../models/WardrobeItem.js";
 import { SEED_ADMIN, ROLES } from "../constants/index.js";
+import { resolveProductImages } from "./utils/productImageResolver.js";
 
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/revogue";
 
@@ -303,11 +304,12 @@ async function seedDb() {
     }
     console.log("Brands created:", BRANDS.length);
 
-    for (const p of PRODUCTS) {
+    for (const [idx, p] of PRODUCTS.entries()) {
       const parentCat = categoryMap[p.categoryName]?.parent;
       const subCat = categoryMap[p.categoryName]?.subcategories[p.subcategoryName];
       if (!parentCat || !subCat) continue;
       const brandRef = p.brand ? brandMap[p.brand]?._id : null;
+      const images = await resolveProductImages(p, { index: idx });
       await Product.create({
         title: p.title,
         description: p.description,
@@ -319,7 +321,7 @@ async function seedDb() {
         brand: brandRef,
         tier: p.tier || "normal",
         trending: p.trending || false,
-        images: [`https://picsum.photos/400/400?random=${Math.floor(Math.random() * 1000)}`],
+        images,
         seller: admin._id,
         status: "active",
       });

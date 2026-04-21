@@ -8,10 +8,13 @@
     "start": "node index.js",
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:db": "node scripts/seedDb.js",
+    "seed:luxury": "node scripts/seedLuxury.js",
     "seed:slots": "node scripts/assignOutfitSlots.js",
     "seed:eco": "node scripts/seedProductEcoMetrics.js",
     "seed:embeddings": "node scripts/seedEmbeddings.js",
-    "backfill:embeddings": "node scripts/backfillEmbeddings.js"
+    "backfill:embeddings": "node scripts/backfillEmbeddings.js",
+    "update:luxury-images": "node scripts/updateLuxuryProductImages.js",
+    "update:normal-images": "node scripts/updateNormalProductImages.js"
   },
   "dependencies": {
     "express": "^4.21.0",

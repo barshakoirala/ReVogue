@@ -79,7 +79,7 @@ export default function CheckoutPage() {
     );
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !placedOrder) {
     return (
       <div className={`${CLASSES.userWrapper} min-h-screen bg-stone-50`}>
         <UserHeader showBack />
